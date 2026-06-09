@@ -1,7 +1,7 @@
 import streamlit as st
 
 import sys
-sys.path.append('/content/drive/MyDrive/Python/Packages/')
+sys.path.append('/content/drive/My Drive/Python/Packages/')
 
 import pandas as pd
 from io import BytesIO
@@ -16,8 +16,8 @@ import os # Added import
 from docx import Document
 from docxcompose.composer import Composer
 
-# Replace 'your_file_name.docx' with the actual path to your file in Google Drive
-template_file = '/content/drive/MyDrive/Python/ST26-template.docx'
+# Use the template file cloned from GitHub to the current directory
+template_file = 'ST26-template.docx'
 output_file = 'combined_output_2026.docx'
 
 # Spreadsheet data Surat Tugas
