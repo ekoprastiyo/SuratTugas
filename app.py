@@ -134,7 +134,7 @@ def download_ST(df):
      # Download the file
     with open(output_path, "rb") as file:
         btn = st.download_button(
-                label="File is Ready",
+                label="Download Surat Tugas",
                 data=file,
                 file_name=output_path,
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -149,6 +149,6 @@ def download_ST(df):
     os.remove(f)
 
 # Add a button to trigger the download
-if st.button('Generate & Download Surat Tugas'):
+if st.button('Generate Surat Tugas'):
     download_ST(filtered_Kegiatan)
 st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
