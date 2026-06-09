@@ -31,22 +31,20 @@ Kegiatan, Karyawan = load_data() # Load data (will use cache unless cleared)
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.8, 0.2]) # Add a third column for the refresh button
+col1, col2 = st.columns([0.6, 0.2, 0.2]) # Add a third column for the refresh button
 with col1:
   st.write('Displaying the DataFrame:')
 with col2:
   st.markdown(f"[Go to Spreadsheet](https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/)", unsafe_allow_html=True)
-
-col1, col2 = st.columns([0.7, 0.3])
-with col1:
-  st.sidebar.header('Filter Options')
-with col2:
-  if st.button('Refresh Data'):
+with col3:
+  if st.button('Refresh', type="tertiary"):
     # Invalidate cache if it was used, then reload
     st.cache_data.clear()
     Kegiatan, Karyawan = load_data()
   else:
     Kegiatan, Karyawan = load_data()
+
+st.sidebar.header('Filter Options')
 
 options = ["All", "Selesai", "Belum Selesai"]
 Status_surat = st.sidebar.segmented_control(
