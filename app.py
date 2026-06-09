@@ -35,7 +35,7 @@ Kegiatan, Karyawan = load_data()
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.7, 0.3]) # Removed the third column
+col1, col2 = st.columns([0.55, 0.45]) # Removed the third column
 with col1:
   st.write('Displaying the DataFrame:')
 with col2:
