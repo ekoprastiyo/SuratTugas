@@ -1,7 +1,7 @@
 import streamlit as st
 
 import sys
-sys.path.append('/content/drive/My Drive/Python/Packages/')
+sys.path.append('/content/drive/MyDrive/Python/Packages/')
 
 import pandas as pd
 from io import BytesIO
@@ -17,7 +17,7 @@ from docx import Document
 from docxcompose.composer import Composer
 
 # Replace 'your_file_name.docx' with the actual path to your file in Google Drive
-template_file = '/content/drive/My Drive/Python/ST26-template.docx'
+template_file = '/content/drive/MyDrive/Python/ST26-template.docx'
 output_file = 'combined_output_2026.docx'
 
 # Spreadsheet data Surat Tugas
@@ -125,8 +125,7 @@ def download_ST(df):
               master.element.body.append(element)
 
       # 4. Append the rest (starting from the second file)
-      for temp_file in temp_files[1:]:
-          append_docx(master_doc, temp_file)
+      for temp_file in temp_files[1:]:          append_docx(master_doc, temp_file)
 
       # 5. Save and Download
       master_doc.save(output_file)
