@@ -140,7 +140,7 @@ def download_ST(df, Kegiatan_all, Karyawan_all):
     for f in temp_files:
         os.remove(f)
 
-col1, col2, col3 = st.columns([0.2, 0.2, 0,6]) # Removed the third column
+col1, col2, col3 = st.columns([0.2, 0.2, 0.6]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
     download_ST(filtered_Kegiatan, Kegiatan, Karyawan)
