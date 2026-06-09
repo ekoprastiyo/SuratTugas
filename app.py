@@ -82,74 +82,74 @@ st.dataframe(filtered_Kegiatan)
 
 def download_ST(df):
 
-# Kegiatan.head()
-Karyawan = pd.read_excel(url, sheet_name='Karyawan_ST')
-# Karyawan.head()
+  # Kegiatan.head()
+  Karyawan = pd.read_excel(url, sheet_name='Karyawan_ST')
+  # Karyawan.head()
 
-# Template DOCX
-doc = DocxTemplate(template_file)
+  # Template DOCX
+  doc = DocxTemplate(template_file)
 
-# Filter nomor surat
-# ListST = list(Kegiatan["NoSurat"].unique())
+  # Filter nomor surat
+  # ListST = list(Kegiatan["NoSurat"].unique())
 
-# # List dictionary
-# list_dicts = []
+  # # List dictionary
+  # list_dicts = []
 
-# # print(ListST)
-# for i in ListST:
-#   #filter kegiatan lembur per satu surat tugas
-#   KegiatanPerST = Kegiatan[Kegiatan['NoSurat'] == int(i)]
-#   #filter nama karyawan lembur per satu surat tugas
-#   KaryawanPerST = Karyawan[Karyawan['NoSurat'] == int(i)]
-#   #data karyawan yang diinput dalam surat tugas
-#   nama = KaryawanPerST[["Nama","NIK","UnitKerja"]]
-#   #data kegiatan yang diinput dalam surat tugas
-#   kegiatan = KegiatanPerST[["JangkaWaktu","Kegiatan","Lokasi"]]
+  # # print(ListST)
+  # for i in ListST:
+  #   #filter kegiatan lembur per satu surat tugas
+  #   KegiatanPerST = Kegiatan[Kegiatan['NoSurat'] == int(i)]
+  #   #filter nama karyawan lembur per satu surat tugas
+  #   KaryawanPerST = Karyawan[Karyawan['NoSurat'] == int(i)]
+  #   #data karyawan yang diinput dalam surat tugas
+  #   nama = KaryawanPerST[["Nama","NIK","UnitKerja"]]
+  #   #data kegiatan yang diinput dalam surat tugas
+  #   kegiatan = KegiatanPerST[["JangkaWaktu","Kegiatan","Lokasi"]]
 
-#   # Dictionary
-#   nama_dict = nama.to_dict(orient='records')
-#   # print(nama_dict)
-#   kegiatan_dict = kegiatan.to_dict(orient='records')
-#   # print(kegiatan_dict)
+  #   # Dictionary
+  #   nama_dict = nama.to_dict(orient='records')
+  #   # print(nama_dict)
+  #   kegiatan_dict = kegiatan.to_dict(orient='records')
+  #   # print(kegiatan_dict)
 
-#   context = {
-#       "NoSurat": f"{i}",
-#       "table1": nama_dict,
-#       "table2": kegiatan_dict,
-#           }
-#   list_dicts.append(context)
+  #   context = {
+  #       "NoSurat": f"{i}",
+  #       "table1": nama_dict,
+  #       "table2": kegiatan_dict,
+  #           }
+  #   list_dicts.append(context)
 
-# temp_files = []
-# # 2. Render each entry into a temporary file
-# for i, entry in enumerate(list_dicts):
-#     tpl = DocxTemplate(template_file)
-#     tpl.render(entry)
-#     temp_name = f'temp_{i}.docx'
-#     tpl.save(temp_name)
-#     temp_files.append(temp_name)
+  # temp_files = []
+  # # 2. Render each entry into a temporary file
+  # for i, entry in enumerate(list_dicts):
+  #     tpl = DocxTemplate(template_file)
+  #     tpl.render(entry)
+  #     temp_name = f'temp_{i}.docx'
+  #     tpl.save(temp_name)
+  #     temp_files.append(temp_name)
 
-# def merge_docx_files(master_path, files_to_append, output_path):
-#   # Open the master document that acts as the starting point
-#   master = Document(master_path)
-#   master.add_page_break()
-#   composer = Composer(master)
+  # def merge_docx_files(master_path, files_to_append, output_path):
+  #   # Open the master document that acts as the starting point
+  #   master = Document(master_path)
+  #   master.add_page_break()
+  #   composer = Composer(master)
 
-#   for i, file_path in enumerate(files_to_append):
-#     # Load each additional document
-#     doc_to_append = Document(file_path)
-#     doc_to_append.add_page_break()
-#     # Append it to the master while preserving formatting
-#     composer.append(doc_to_append)
+  #   for i, file_path in enumerate(files_to_append):
+  #     # Load each additional document
+  #     doc_to_append = Document(file_path)
+  #     doc_to_append.add_page_break()
+  #     # Append it to the master while preserving formatting
+  #     composer.append(doc_to_append)
 
-#   # Save the final combined document
-#   composer.save(output_path)
+  #   # Save the final combined document
+  #   composer.save(output_path)
 
-#   # Download the file
-#   from google.colab import files
-#   files.download(output_path)
+  #   # Download the file
+  #   from google.colab import files
+  #   files.download(output_path)
 
-# merge_docx_files(temp_files[0], temp_files[1:], output_file)
+  # merge_docx_files(temp_files[0], temp_files[1:], output_file)
 
-# # Cleanup temporary files
-# for f in temp_files:
-#     os.remove(f)
+  # # Cleanup temporary files
+  # for f in temp_files:
+  #     os.remove(f)
