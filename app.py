@@ -464,7 +464,7 @@ def Surat_Daftar_Lembur(df, nama, NIK_Karyawan, bulan, url, absen_aralia, temp_f
   temp_files.append(output_file)
   return temp_files
 
-def generate_monthly_report(Kegiatan, Karyawan, bulan, absen_aralia, url,
+def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
                             temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur):
 
   # nama karyawan dalam surat tugas bulan ini
@@ -535,7 +535,7 @@ with col1:
     download_ST(filtered_Kegiatan, Kegiatan, Karyawan)
 with col2:
   if st.button('Generate Surat Lembur'):
-    generate_monthly_report(Kegiatan, Karyawan, months[current_month_name], bulan_eng_to_ina(current_month_name), url,
+    generate_monthly_report(Kegiatan, Karyawan, search_name, months[current_month_name], bulan_eng_to_ina(current_month_name), url,
                             temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 with col3:
   st.write("")
