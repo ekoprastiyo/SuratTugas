@@ -37,6 +37,7 @@ with col1:
 with col2:
   st.markdown(f"[Go to Spreadsheet](https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/)", unsafe_allow_html=True)
 with col3:
+  st.write('')
   if st.button('Refresh', type="tertiary"):
     # Invalidate cache if it was used, then reload
     st.cache_data.clear()
