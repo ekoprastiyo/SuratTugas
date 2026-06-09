@@ -34,7 +34,7 @@ col1, col2 = st.columns([0.7, 0.3]) # Adjust ratios as needed
 with col1:
     st.write('Displaying the DataFrame:')
 with col2:
-    st.link_button("Go to Spreadsheet", url, help="Open the source Google Sheet in a new tab")
+    st.markdown(f":blue[Go to Spreadsheet](https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/)", unsafe_allow_html=True)
 
 # --- Sidebar for filters ---
 st.sidebar.header('Filter Options')
