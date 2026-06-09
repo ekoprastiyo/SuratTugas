@@ -134,13 +134,11 @@ def download_ST(df):
      # Download the file
     with open(output_path, "rb") as file:
         btn = st.download_button(
-                label="Download Surat Tugas",
+                label="File is Ready",
                 data=file,
                 file_name=output_path,
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
-    st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
-
 
   if list_dicts:
     merge_docx_files(temp_files[0], temp_files[1:], output_file)
@@ -153,3 +151,4 @@ def download_ST(df):
 # Add a button to trigger the download
 if st.button('Generate & Download Surat Tugas'):
     download_ST(filtered_Kegiatan)
+st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
