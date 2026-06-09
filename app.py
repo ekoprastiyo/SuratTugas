@@ -19,7 +19,6 @@ output_file = 'combined_output_2026.docx'
 url = "https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/export?format=xlsx"
 
 # --- Data Loading and Preprocessing --- #
-@st.cache_data
 def load_data():
     kegiatan_df = pd.read_excel(url, sheet_name='Kegiatan', header=2)
     karyawan_df = pd.read_excel(url, sheet_name='Karyawan_ST')
@@ -27,7 +26,12 @@ def load_data():
     kegiatan_df['TanggalAkhir'] = pd.to_datetime(kegiatan_df['TanggalAkhir'], format='%d/%m/%Y', errors='coerce')
     return kegiatan_df, karyawan_df
 
-Kegiatan, Karyawan = load_data()
+if st.button('Refresh Data'):
+    # Invalidate cache if it was used, then reload
+    st.cache_data.clear()
+    Kegiatan, Karyawan = load_data()
+else:
+    Kegiatan, Karyawan = load_data()
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
@@ -88,13 +92,13 @@ def merge_docx_files(master_path, files_to_append, output_path):
 
     composer.save(output_path)
 
-def download_ST(df):
+def download_ST(df, Kegiatan_all, Karyawan_all):
     ListST = list(df["NoSurat"].unique())
     list_dicts = []
 
     for i in ListST:
-        KegiatanPerST = Kegiatan[Kegiatan['NoSurat'] == int(i)]
-        KaryawanPerST = Karyawan[Karyawan['NoSurat'] == int(i)]
+        KegiatanPerST = Kegiatan_all[Kegiatan_all['NoSurat'] == int(i)]
+        KaryawanPerST = Karyawan_all[Karyawan_all['NoSurat'] == int(i)]
         nama_karyawan = KaryawanPerST[["Nama", "NIK", "UnitKerja"]]
         kegiatan = KegiatanPerST[["JangkaWaktu", "Kegiatan", "Lokasi"]]
 
@@ -133,5 +137,5 @@ def download_ST(df):
 
 
 if st.button('Generate Surat Tugas'):
-    download_ST(filtered_Kegiatan)
+    download_ST(filtered_Kegiatan, Kegiatan, Karyawan)
 st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
