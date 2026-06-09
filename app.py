@@ -30,7 +30,11 @@ Kegiatan['TanggalAwal'] = pd.to_datetime(Kegiatan['TanggalAwal'], format='%d/%m/
 Kegiatan['TanggalAkhir'] = pd.to_datetime(Kegiatan['TanggalAkhir'], format='%d/%m/%Y', errors='coerce')
 
 st.title('Surat Tugas Kanwil X')
-st.write('Displaying the Kegiatan DataFrame:')
+col1, col2 = st.columns([0.7, 0.3]) # Adjust ratios as needed
+with col1:
+    st.write('Displaying the DataFrame:')
+with col2:
+    st.link_button("Go to Spreadsheet", url, help="Open the source Google Sheet in a new tab")
 
 # --- Sidebar for filters ---
 st.sidebar.header('Filter Options')
