@@ -114,34 +114,65 @@ def download_ST(df):
       tpl.save(temp_name)
       temp_files.append(temp_name)
 
-  # 3. MERGE LOGIC: Use the FIRST rendered file as the master
-  if list_dicts: # Only proceed if there are documents to merge
-      master_doc = Document(temp_files[0])
+  # 3a. Merge logic
+  def merge_docx_files(master_path, files_to_append, output_path):
+    # Open the master document that acts as the starting point
+    master = Document(master_path)
+    master.add_page_break()
+    composer = Composer(master)
 
-      # Helper function to append one docx to another with a page break
-      def append_docx(master, sub_doc_path):
-          sub_doc = Document(sub_doc_path)
-          for element in sub_doc.element.body:
-              master.element.body.append(element)
+    for i, file_path in enumerate(files_to_append):
+      # Load each additional document
+      doc_to_append = Document(file_path)
+      doc_to_append.add_page_break()
+      # Append it to the master while preserving formatting
+      composer.append(doc_to_append)
 
-      # 4. Append the rest (starting from the second file)
-      for temp_file in temp_files[1:]:          append_docx(master_doc, temp_file)
+    # Save the final combined document
+    composer.save(output_path)
 
-      # 5. Save and Download
-      master_doc.save(output_file)
+     # Download the file
+    with open(output_path, "rb") as file:
+        btn = st.download_button(
+                label="Download Surat Tugas",
+                data=file,
+                file_name=output_path,
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+        
+  merge_docx_files(temp_files[0], temp_files[1:], output_file)
+    # Cleanup temporary files
+  for f in temp_files:
+    os.remove(f)
 
-      # Download the file
-      with open(output_file, "rb") as file:
-          btn = st.download_button(
-                  label="Download Surat Tugas",
-                  data=file,
-                  file_name=output_file,
-                  mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              )
+  # # 3. MERGE LOGIC: Use the FIRST rendered file as the master
+  # if list_dicts: # Only proceed if there are documents to merge
+  #     master_doc = Document(temp_files[0])
 
-      # Cleanup temporary files
-      for f in temp_files:
-          os.remove(f)
+  #     # Helper function to append one docx to another with a page break
+  #     def append_docx(master, sub_doc_path):
+  #         sub_doc = Document(sub_doc_path)
+  #         for element in sub_doc.element.body:
+  #             master.element.body.append(element)
+
+  #     # 4. Append the rest (starting from the second file)
+  #     for temp_file in temp_files[1:]:          append_docx(master_doc, temp_file)
+
+  #     # 5. Save and Download
+  #     master_doc.save(output_file)
+
+  #     # Download the file
+  #     with open(output_file, "rb") as file:
+  #         btn = st.download_button(
+  #                 label="Download Surat Tugas",
+  #                 data=file,
+  #                 file_name=output_file,
+  #                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  #             )
+
+  #     # Cleanup temporary files
+  #     for f in temp_files:
+  #         os.remove(f)
   else:
       st.warning("No documents generated for merging. Check your filters.")
 
