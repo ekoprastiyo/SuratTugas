@@ -8,7 +8,7 @@ sys.path.append('/content/drive/My Drive/Python/Packages/')
 import pandas as pd
 from io import BytesIO
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from docxtpl import DocxTemplate
 from docx2pdf import convert
 import jinja2
