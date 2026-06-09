@@ -85,75 +85,67 @@ filtered_Kegiatan = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir
 st.dataframe(filtered_Kegiatan)
 
 def download_ST(df):
-
-  # Kegiatan.head()
   Karyawan = pd.read_excel(url, sheet_name='Karyawan_ST')
-  # Karyawan.head()
-
-  # Template DOCX
   doc = DocxTemplate(template_file)
+  ListST = list(df["NoSurat"].unique())
+  list_dicts = []
 
-  # Filter nomor surat
-  # ListST = list(Kegiatan["NoSurat"].unique())
+  for i in ListST:
+    KegiatanPerST = Kegiatan[Kegiatan['NoSurat'] == int(i)]
+    KaryawanPerST = Karyawan[Karyawan['NoSurat'] == int(i)]
+    nama_karyawan = KaryawanPerST[["Nama","NIK","UnitKerja"]]
+    kegiatan = KegiatanPerST[["JangkaWaktu","Kegiatan","Lokasi"]]
 
-  # # List dictionary
-  # list_dicts = []
+    nama_dict = nama_karyawan.to_dict(orient='records')
+    kegiatan_dict = kegiatan.to_dict(orient='records')
 
-  # # print(ListST)
-  # for i in ListST:
-  #   #filter kegiatan lembur per satu surat tugas
-  #   KegiatanPerST = Kegiatan[Kegiatan['NoSurat'] == int(i)]
-  #   #filter nama karyawan lembur per satu surat tugas
-  #   KaryawanPerST = Karyawan[Karyawan['NoSurat'] == int(i)]
-  #   #data karyawan yang diinput dalam surat tugas
-  #   nama = KaryawanPerST[["Nama","NIK","UnitKerja"]]
-  #   #data kegiatan yang diinput dalam surat tugas
-  #   kegiatan = KegiatanPerST[["JangkaWaktu","Kegiatan","Lokasi"]]
+    context = {
+        "NoSurat": f"{i}",
+        "table1": nama_dict,
+        "table2": kegiatan_dict,
+            }
+    list_dicts.append(context)
 
-  #   # Dictionary
-  #   nama_dict = nama.to_dict(orient='records')
-  #   # print(nama_dict)
-  #   kegiatan_dict = kegiatan.to_dict(orient='records')
-  #   # print(kegiatan_dict)
+  temp_files = []
+  for i, entry in enumerate(list_dicts):
+      tpl = DocxTemplate(template_file)
+      tpl.render(entry)
+      temp_name = f'temp_{i}.docx'
+      tpl.save(temp_name)
+      temp_files.append(temp_name)
 
-  #   context = {
-  #       "NoSurat": f"{i}",
-  #       "table1": nama_dict,
-  #       "table2": kegiatan_dict,
-  #           }
-  #   list_dicts.append(context)
+  # 3. MERGE LOGIC: Use the FIRST rendered file as the master
+  if list_dicts: # Only proceed if there are documents to merge
+      master_doc = Document(temp_files[0])
 
-  # temp_files = []
-  # # 2. Render each entry into a temporary file
-  # for i, entry in enumerate(list_dicts):
-  #     tpl = DocxTemplate(template_file)
-  #     tpl.render(entry)
-  #     temp_name = f'temp_{i}.docx'
-  #     tpl.save(temp_name)
-  #     temp_files.append(temp_name)
+      # Helper function to append one docx to another with a page break
+      def append_docx(master, sub_doc_path):
+          sub_doc = Document(sub_doc_path)
+          for element in sub_doc.element.body:
+              master.element.body.append(element)
 
-  # def merge_docx_files(master_path, files_to_append, output_path):
-  #   # Open the master document that acts as the starting point
-  #   master = Document(master_path)
-  #   master.add_page_break()
-  #   composer = Composer(master)
+      # 4. Append the rest (starting from the second file)
+      for temp_file in temp_files[1:]:
+          append_docx(master_doc, temp_file)
 
-  #   for i, file_path in enumerate(files_to_append):
-  #     # Load each additional document
-  #     doc_to_append = Document(file_path)
-  #     doc_to_append.add_page_break()
-  #     # Append it to the master while preserving formatting
-  #     composer.append(doc_to_append)
+      # 5. Save and Download
+      master_doc.save(output_file)
 
-  #   # Save the final combined document
-  #   composer.save(output_path)
+      # Download the file
+      with open(output_file, "rb") as file:
+          btn = st.download_button(
+                  label="Download Surat Tugas",
+                  data=file,
+                  file_name=output_file,
+                  mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              )
 
-  #   # Download the file
-  #   from google.colab import files
-  #   files.download(output_path)
+      # Cleanup temporary files
+      for f in temp_files:
+          os.remove(f)
+  else:
+      st.warning("No documents generated for merging. Check your filters.")
 
-  # merge_docx_files(temp_files[0], temp_files[1:], output_file)
-
-  # # Cleanup temporary files
-  # for f in temp_files:
-  #     os.remove(f)
+# Add a button to trigger the download
+if st.button('Generate & Download Surat Tugas'):
+    download_ST(filtered_Kegiatan)
