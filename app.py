@@ -30,7 +30,7 @@ Kegiatan['TanggalAwal'] = pd.to_datetime(Kegiatan['TanggalAwal'], format='%d/%m/
 Kegiatan['TanggalAkhir'] = pd.to_datetime(Kegiatan['TanggalAkhir'], format='%d/%m/%Y', errors='coerce')
 
 st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.8, 0.2]) # Adjust ratios as needed
+col1, col2 = st.columns([0.5, 0.5]) # Adjust ratios as needed
 with col1:
     st.write('Displaying the DataFrame:')
 with col2:
