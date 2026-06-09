@@ -1,0 +1,10 @@
+python-docx
+docxtpl
+docx2pdf
+num2words
+pandas
+requests
+numpy
+jinja2
+streamlit
+docxcompose
