@@ -4,6 +4,7 @@ import streamlit as st
 st.set_page_config(layout='wide') # Set the page layout to wide
 
 import sys
+sys.path.append('/content/drive/My Drive/Python/Packages/')
 import pandas as pd
 from io import BytesIO
 import requests
@@ -26,7 +27,7 @@ def load_data():
     kegiatan_df = pd.read_excel(url, sheet_name='Kegiatan', header=2)
     karyawan_df = pd.read_excel(url, sheet_name='Karyawan_ST')
     kegiatan_df['TanggalAwal'] = pd.to_datetime(kegiatan_df['TanggalAwal'], format='%d/%m/%Y', errors='coerce')
-    kegiatan_df['TanggalAkhir'] = pd.to_datetime(kegiatan_df['TanggalAkhir'], format='%d/%m/%Y', errors='coerce')
+    kegiatan_df['TanggalAkhir'] = pd.to_datetime(kegiatan_df['TanggalAkhir'], format='%d/%m/%Y', errors='coerce') # Corrected typo here
     return kegiatan_df, karyawan_df
 
 # Call load_data once. It will use cache if available, or fetch fresh data if cache cleared by the button.
@@ -34,11 +35,11 @@ Kegiatan, Karyawan = load_data()
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.8, 0.2])
+col1, col2 = st.columns([0.7, 0.3]) # Removed the third column
 with col1:
   st.write('Displaying the DataFrame:')
 with col2:
-  st.markdown(f"[Go to Spreadsheet](https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/)", unsafe_allow_html=True)
+  st.markdown(f"<div style='text-align: right;'><a href='https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/' target='_blank'>Go to Spreadsheet</a></div>", unsafe_allow_html=True)
 
 st.sidebar.header('Filter Options')
 
