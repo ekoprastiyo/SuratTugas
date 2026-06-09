@@ -1,7 +1,7 @@
 import streamlit as st
 
 import sys
-sys.path.append('/content/drive/My Drive/Python/Packages/')
+sys.path.append('/content/drive/MyDrive/Python/Packages/')
 
 import pandas as pd
 from io import BytesIO
@@ -16,7 +16,7 @@ import os # Added import
 from docx import Document
 from docxcompose.composer import Composer
 
-# Use the template file cloned from GitHub to the current directory
+# Use the template file copied from GitHub to the current directory
 template_file = 'ST26-template.docx'
 output_file = 'combined_output_2026.docx'
 
