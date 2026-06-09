@@ -140,7 +140,7 @@ def download_ST(df, Kegiatan_all, Karyawan_all):
     for f in temp_files:
         os.remove(f)
 
-col1, col2 = st.columns([0.2, 0.2]) # Removed the third column
+col1, col2, col3 = st.columns([0.2, 0.2, 0,6]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
     download_ST(filtered_Kegiatan, Kegiatan, Karyawan)
@@ -148,4 +148,6 @@ with col2:
   if st.button('Generate Surat Lembur'):
     generate_monthly_report(Kegiatan, Karyawan, months[current_month_name], bulan_eng_to_ina(current_month_name), url,
                             temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
+with col3:
+  st.write("")
 st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
