@@ -33,11 +33,12 @@ Kegiatan, Karyawan = load_data() # Load data (will use cache unless cleared)
 st.title('Surat Tugas Kanwil X')
 col1, col2, col3 = st.columns([0.6, 0.2, 0.2]) # Add a third column for the refresh button
 with col1:
+  st.write('')
   st.write('Displaying the DataFrame:')
 with col2:
+  st.write('')
   st.markdown(f"[Go to Spreadsheet](https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/)", unsafe_allow_html=True)
 with col3:
-  st.write('')
   if st.button('Refresh', type="tertiary"):
     # Invalidate cache if it was used, then reload
     st.cache_data.clear()
