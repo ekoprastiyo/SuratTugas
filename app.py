@@ -16,6 +16,7 @@ from docx import Document
 import os
 from docxcompose.composer import Composer
 from pypdf import PdfWriter
+from num2words import num2words # Add num2words import
 
 # --- Configuration --- #
 template_file = 'ST26-template.docx'
@@ -355,20 +356,20 @@ def Surat_Daftar_Lembur(df, nama, NIK_Karyawan, bulan, url, absen_aralia, temp_f
           current_date += delta
 
   # Table data Karyawan Form A Lembur
-  Karyawan = pd.read_excel(url, sheet_name='Karyawan_ST')
-  Karyawan = Karyawan[Karyawan['NIK'] == NIK_Karyawan]
+  Karyawan_df = pd.read_excel(url, sheet_name='Karyawan_ST') # Use a different name to avoid conflict
+  Karyawan_df = Karyawan_df[Karyawan_df['NIK'] == NIK_Karyawan]
   # drop data sama
-  Karyawan = Karyawan.drop_duplicates(subset=["NIK"])
+  Karyawan_df = Karyawan_df.drop_duplicates(subset=["NIK"])
   # Duplikasi data sesuai jumlah lembur
-  Karyawan = pd.DataFrame(np.repeat(Karyawan.values, repeats=len(TanggalLembur), axis=0), columns=Karyawan.columns)
+  Karyawan_df = pd.DataFrame(np.repeat(Karyawan_df.values, repeats=len(TanggalLembur), axis=0), columns=Karyawan_df.columns)
   # hapus kolom nomor surat
-  Karyawan = Karyawan.iloc[:, 1:]
+  Karyawan_df = Karyawan_df.iloc[:, 1:]
   # tambah satu kolom nomor baru
-  Karyawan = Karyawan.reset_index().rename(columns={'index': 'No'})
-  Karyawan['No'] = Karyawan['No'] + 1
+  Karyawan_df = Karyawan_df.reset_index().rename(columns={'index': 'No'})
+  Karyawan_df['No'] = Karyawan_df['No'] + 1
   # tambah kolom tanggal lembur ke dataframe karyawan
-  Karyawan['TanggalLembur'] = TanggalLembur
-  Karyawan['TanggalLembur'] = pd.to_datetime(Karyawan['TanggalLembur'], format='%d %b %Y')
+  Karyawan_df['TanggalLembur'] = TanggalLembur
+  Karyawan_df['TanggalLembur'] = pd.to_datetime(Karyawan_df['TanggalLembur'], format='%d %b %Y')
 
   try:
     # input jam lembur form A berdasarkan absen Aralia
@@ -431,13 +432,13 @@ def Surat_Daftar_Lembur(df, nama, NIK_Karyawan, bulan, url, absen_aralia, temp_f
     jam_lembur["TotalJam"] = Total_lembur
 
     # menggabungkan kolom jam datang, jam pulang, dan jam lembur ke dataframe utama
-    Lemburan = pd.merge(Karyawan,jam_lembur, left_on="TanggalLembur", right_on="Tanggal", how="left")
+    Lemburan = pd.merge(Karyawan_df,jam_lembur, left_on="TanggalLembur", right_on="Tanggal", how="left")
     Lemburan = Lemburan.drop(columns=['Tanggal'])
     Lemburan['TanggalLembur'] = Lemburan['TanggalLembur'].dt.strftime('%d %b %Y')
     Lemburan['Datang'] = Lemburan['Datang'].dt.strftime('%H:%M')
     Lemburan['Pulang'] = Lemburan['Pulang'].dt.strftime('%H:%M')
   except FileNotFoundError:
-    Lemburan = Karyawan.copy()
+    Lemburan = Karyawan_df.copy()
     Lemburan['TanggalLembur'] = Lemburan['TanggalLembur'].dt.strftime('%d %b %Y')
 
 
@@ -486,10 +487,16 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
     # jika tidak ada nama maka lanjut ke nama selanjutnya
     if current_kegiatan.empty:
       st.write(f"No activities found for {nm} in {angka_ke_bulan(bulan)}")
+      return # Exit if no activities found for the employee
 
     # mencari NIK Karyawan berdasarkan nama
-    NIK_Karyawan = Karyawan.loc[Karyawan['Nama'] == nm, 'NIK'].item()
-    
+    nik_series = Karyawan.loc[Karyawan['Nama'] == nm, 'NIK']
+    NIK_Karyawan = nik_series.iloc[0] if not nik_series.empty else None
+
+    if NIK_Karyawan is None:
+        st.warning(f"NIK not found for employee {nm}.")
+        return
+
     current_month_name = datetime.now().strftime('%B')
 
     # membuat lokasi folder surat tugas yang telah diupload di gdrive
@@ -510,8 +517,10 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
     absensi_output_filename = f"Absensi_{output_filename}.docx"
 
     # Returns the value in 'Column_B' where 'Column_A' is 'Target_Value'
-    vendor = Karyawan.loc[Karyawan['Nama'] == nm, 'Vendor']
-    if vendor.item() == "EPS":
+    vendor_series = Karyawan.loc[Karyawan['Nama'] == nm, 'Vendor']
+    vendor = vendor_series.iloc[0] if not vendor_series.empty else None
+
+    if vendor == "EPS":
       merge_docx_files(berk[-1], berk[:-1], absensi_output_filename)
       with open(absensi_output_filename, "rb") as file:
           st.download_button(
@@ -528,6 +537,8 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
       # merge_pdfs(angka_ke_bulan(bulan), list_st, f"ST_{output_filename}.pdf")
       # print(f"Else_ST_{output_filename}.pdf")
       st.warning("No documents generated for merging. Check your filters.")
+  else:
+    st.warning(f"Employee '{nm}' not found in the activity list for the selected month.")
 
 col1, col2, col3 = st.columns([0.2, 0.2, 0.6]) # Removed the third column
 with col1:
@@ -535,7 +546,11 @@ with col1:
     download_ST(filtered_Kegiatan, Kegiatan, Karyawan)
 with col2:
   if st.button('Generate Surat Lembur'):
-    generate_monthly_report(Kegiatan, Karyawan, search_name, months[current_month_name], bulan_eng_to_ina(current_month_name), url,
+    # Make sure to pass the correct arguments to generate_monthly_report
+    # 'search_name' is the employee name (nm)
+    # 'selected_month_num' is the month number (bulan)
+    # The remaining arguments are the template files and URL
+    generate_monthly_report(Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
                             temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 with col3:
   st.write("")
