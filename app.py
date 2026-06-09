@@ -15,9 +15,14 @@ import jinja2
 from docx import Document
 import os
 from docxcompose.composer import Composer
+from pypdf import PdfWriter
 
 # --- Configuration --- #
 template_file = 'ST26-template.docx'
+# template form absensi
+temp_file_konfirmasi_absen = 'Konfirmasi_absen.docx'
+temp_file_perintah_lembur = 'Surat Perintah Lembur.docx'
+temp_file_daftar_lembur = 'Daftar Perintah Lembur.docx'
 output_file = 'combined_output_2026.docx'
 url = "https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/export?format=xlsx"
 
@@ -135,7 +140,12 @@ def download_ST(df, Kegiatan_all, Karyawan_all):
     for f in temp_files:
         os.remove(f)
 
-
-if st.button('Generate Surat Tugas'):
+col1, col2 = st.columns([0.2, 0.2]) # Removed the third column
+with col1:
+  if st.button('Generate Surat Tugas'):
     download_ST(filtered_Kegiatan, Kegiatan, Karyawan)
+with col2:
+  if st.button('Generate Surat Lembur'):
+    generate_monthly_report(Kegiatan, Karyawan, months[current_month_name], bulan_eng_to_ina(current_month_name), url,
+                            temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
