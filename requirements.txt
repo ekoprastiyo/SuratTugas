@@ -10,3 +10,4 @@ streamlit
 docxcompose
 IPython
 openpyxl
+pypdf
