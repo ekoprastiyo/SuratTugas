@@ -1,7 +1,9 @@
 
 import streamlit as st
+
+st.set_page_config(layout='wide') # Set the page layout to wide
+
 import sys
-sys.path.append('/content/drive/MyDrive/Python/Packages/')
 import pandas as pd
 from io import BytesIO
 import requests
@@ -19,6 +21,7 @@ output_file = 'combined_output_2026.docx'
 url = "https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/export?format=xlsx"
 
 # --- Data Loading and Preprocessing --- #
+@st.cache_data(ttl=3600) # Cache data for 1 hour by default
 def load_data():
     kegiatan_df = pd.read_excel(url, sheet_name='Kegiatan', header=2)
     karyawan_df = pd.read_excel(url, sheet_name='Karyawan_ST')
@@ -26,23 +29,16 @@ def load_data():
     kegiatan_df['TanggalAkhir'] = pd.to_datetime(kegiatan_df['TanggalAkhir'], format='%d/%m/%Y', errors='coerce')
     return kegiatan_df, karyawan_df
 
-
-Kegiatan, Karyawan = load_data() # Load data (will use cache unless cleared)
+# Call load_data once. It will use cache if available, or fetch fresh data if cache cleared by the button.
+Kegiatan, Karyawan = load_data()
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.8, 0.2]) # Add a third column for the refresh button
+col1, col2 = st.columns([0.8, 0.2])
 with col1:
   st.write('Displaying the DataFrame:')
 with col2:
   st.markdown(f"[Go to Spreadsheet](https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/)", unsafe_allow_html=True)
-# with col3:
-#   if st.button('Refresh', type="tertiary"):
-#     # Invalidate cache if it was used, then reload
-#     st.cache_data.clear()
-#     Kegiatan, Karyawan = load_data()
-#   else:
-#     Kegiatan, Karyawan = load_data()
 
 st.sidebar.header('Filter Options')
 
