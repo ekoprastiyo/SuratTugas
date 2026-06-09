@@ -486,7 +486,6 @@ def generate_monthly_report(Kegiatan, Karyawan, bulan, absen_aralia, url,
     # jika tidak ada nama maka lanjut ke nama selanjutnya
     if current_kegiatan.empty:
       st.write(f"No activities found for {nm} in {angka_ke_bulan(bulan)}")
-      continue
 
     # mencari NIK Karyawan berdasarkan nama
     NIK_Karyawan = Karyawan.loc[Karyawan['Nama'] == nm, 'NIK'].item()
