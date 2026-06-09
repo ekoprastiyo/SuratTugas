@@ -82,7 +82,7 @@ if search_name:
     filtered_Kegiatan = filtered_Kegiatan[filtered_Kegiatan['Karyawan'].str.contains(search_name, case=False, na=False)]
 
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
-st.dataframe(filtered_Kegiatan_display, use_container_width=True)
+st.dataframe(filtered_Kegiatan_display, width="stretch")
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
