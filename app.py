@@ -139,42 +139,16 @@ def download_ST(df):
                 file_name=output_path,
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
-        
-  merge_docx_files(temp_files[0], temp_files[1:], output_file)
+    st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
+
+
+  if list_dicts:
+    merge_docx_files(temp_files[0], temp_files[1:], output_file)
+  else:
+      st.warning("No documents generated for merging. Check your filters.")
     # Cleanup temporary files
   for f in temp_files:
     os.remove(f)
-
-  # # 3. MERGE LOGIC: Use the FIRST rendered file as the master
-  # if list_dicts: # Only proceed if there are documents to merge
-  #     master_doc = Document(temp_files[0])
-
-  #     # Helper function to append one docx to another with a page break
-  #     def append_docx(master, sub_doc_path):
-  #         sub_doc = Document(sub_doc_path)
-  #         for element in sub_doc.element.body:
-  #             master.element.body.append(element)
-
-  #     # 4. Append the rest (starting from the second file)
-  #     for temp_file in temp_files[1:]:          append_docx(master_doc, temp_file)
-
-  #     # 5. Save and Download
-  #     master_doc.save(output_file)
-
-  #     # Download the file
-  #     with open(output_file, "rb") as file:
-  #         btn = st.download_button(
-  #                 label="Download Surat Tugas",
-  #                 data=file,
-  #                 file_name=output_file,
-  #                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-  #             )
-
-  #     # Cleanup temporary files
-  #     for f in temp_files:
-  #         os.remove(f)
-  else:
-      st.warning("No documents generated for merging. Check your filters.")
 
 # Add a button to trigger the download
 if st.button('Generate & Download Surat Tugas'):
