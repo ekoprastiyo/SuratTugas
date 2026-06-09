@@ -31,7 +31,7 @@ Kegiatan, Karyawan = load_data() # Load data (will use cache unless cleared)
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.6, 0.2, 0.2]) # Add a third column for the refresh button
+col1, col2 = st.columns([0.8, 0.2]) # Add a third column for the refresh button
 with col1:
   st.write('Displaying the DataFrame:')
 with col2:
