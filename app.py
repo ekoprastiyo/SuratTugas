@@ -19,6 +19,7 @@ output_file = 'combined_output_2026.docx'
 url = "https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/export?format=xlsx"
 
 # --- Data Loading and Preprocessing --- #
+@st.cache_data(ttl=3600) # Cache data for 1 hour by default
 def load_data():
     kegiatan_df = pd.read_excel(url, sheet_name='Kegiatan', header=2)
     karyawan_df = pd.read_excel(url, sheet_name='Karyawan_ST')
@@ -26,20 +27,36 @@ def load_data():
     kegiatan_df['TanggalAkhir'] = pd.to_datetime(kegiatan_df['TanggalAkhir'], format='%d/%m/%Y', errors='coerce')
     return kegiatan_df, karyawan_df
 
-if st.button('Refresh Data'):
-    # Invalidate cache if it was used, then reload
+# if st.button('Refresh Data'):
+#     # Invalidate cache if it was used, then reload
+#     st.cache_data.clear()
+#     Kegiatan, Karyawan = load_data()
+# else:
+#     Kegiatan, Karyawan = load_data()
+
+# Initialize session state for refresh trigger
+if 'refresh_triggered' not in st.session_state:
+    st.session_state.refresh_triggered = False
+
+# If refresh was triggered, clear cache and rerun
+if st.session_state.refresh_triggered:
     st.cache_data.clear()
-    Kegiatan, Karyawan = load_data()
-else:
-    Kegiatan, Karyawan = load_data()
+    st.session_state.refresh_triggered = False # Reset flag
+    st.experimental_rerun() # Rerun the app to get fresh data
+
+Kegiatan, Karyawan = load_data() # Load data (will use cache unless cleared)
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.8, 0.2])
+col1, col2, col3 = st.columns([0.6, 0.2, 0.2]) # Add a third column for the refresh button
 with col1:
     st.write('Displaying the DataFrame:')
 with col2:
     st.markdown(f"[Go to Spreadsheet](https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/)", unsafe_allow_html=True)
+with col3:
+    if st.button('Refresh', key='refresh_data_button_top_right'): # Concise label and key
+        st.session_state.refresh_triggered = True
+        st.experimental_rerun()
 
 st.sidebar.header('Filter Options')
 
