@@ -194,6 +194,9 @@ def Surat_Konfirmasi_absen(df, nama, NIK_Karyawan, bulan, temp_file_konfirmasi_a
   return temp_files
 
 def tgl_lembur_di_surat_perintah(list_tgl):
+  if not list_tgl:
+      return "", "", "", "" # Return empty strings if the list is empty
+
   list_tgl.sort()
   # tanggal awal surat tugas berhari-hari
   tgl_awal = datetime.strptime(list_tgl[0], "%d %b %Y")
@@ -203,7 +206,7 @@ def tgl_lembur_di_surat_perintah(list_tgl):
   tgl_awal3 = tgl_awal2[:3] + bulan_eng_to_ina(tgl_awal2[3:-5]) + tgl_awal2[-5:]
   if len(list_tgl) > 1:
     # tanggal akhir surat tugas  berhari-hari
-    tgl_akhir = datetime.strptime(list_tgl[1], "%d %b %Y")
+    tgl_akhir = datetime.strptime(list_tgl[-1], "%d %b %Y") # Changed to list[-1] to get the last date after sort
     tgl_akhir1 = tanggal_eng_to_ina(tgl_akhir.strftime("%A"))
     tgl_akhir2 = tgl_akhir.strftime("%d %B %Y")
     # tanggal + nama bulan + tahun  dari variable tgl_akhir2
@@ -227,6 +230,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
   for i in ListST:
     #filter kegiatan lembur per satu surat tugas
     KegiatanPerST = df[df['NoSurat'] == int(i)].reset_index(drop=True)
+    st.write("KegiatanPerST")
     st.write(KegiatanPerST)
 
     #data kegiatan yang diinput dalam surat tugas
@@ -261,8 +265,8 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
       # Use .iloc[x] for positional indexing
       # jika terdapat data di tanggal akhir maka lembur lebih dari satu hari
       st.write(KegiatanPerST['TanggalAkhir'])
-      st.write(KegiatanPerST['TanggalAkhir'].iloc[x] == "-")
-      if KegiatanPerST['TanggalAkhir'].iloc[x] == "-":
+      # Changed check to pd.isna
+      if pd.isna(KegiatanPerST['TanggalAkhir'].iloc[x]):
         ST1hari.append(KegiatanPerST['TanggalAwal'].iloc[x].strftime("%d %b %Y"))
       else:
         current_date = KegiatanPerST['TanggalAwal'].iloc[x]
@@ -355,7 +359,8 @@ def Surat_Daftar_Lembur(df, nama, NIK_Karyawan, bulan, url, absen_aralia, temp_f
   # list tanggal lembur
   TanggalLembur = []
   for x in range(len(Kegiatan)):
-    if Kegiatan['TanggalAkhir'][x] == "-":
+    # Changed check to pd.isna
+    if pd.isna(Kegiatan['TanggalAkhir'][x]):
       TanggalLembur.append(Kegiatan['TanggalAwal'][x].strftime("%d %b %Y"))
     else:
       current_date = Kegiatan['TanggalAwal'][x]
