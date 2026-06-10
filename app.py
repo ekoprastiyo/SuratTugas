@@ -227,10 +227,8 @@ def tgl_lembur_di_surat_perintah(list_tgl):
 
 def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
 
-  st.dataframe(df)
   # Filter nomor surat
   ListST = list(df["NoSurat"].unique())
-  st.write(f"Jumlah Surat Lembur : {len(ListST)}")
 
   # List dictionary
   list_dicts = []
@@ -239,8 +237,6 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
   for i in ListST:
     #filter kegiatan lembur per satu surat tugas
     KegiatanPerST = df[df['NoSurat'] == int(i)].reset_index(drop=True)
-    st.write("KegiatanPerST")
-    st.write(KegiatanPerST)
 
     #data kegiatan yang diinput dalam surat tugas
     # 1. Nama Kegiatan
@@ -260,8 +256,6 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
     # menghitung jumlah orang per surat tugas
     JumlahOrg = len(KegiatanPerST["Karyawan"].iloc[0].split(","))
     JumlahOrang = f'{JumlahOrg} ({num2words(JumlahOrg, lang='id')})'
-    st.write(f"Jumlah orang {JumlahOrang}")
-
 
     # 4. Jangka Waktu Lembur
     # list tanggal lembur
@@ -269,11 +263,9 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
     TanggalKegiatanPerST = []
     ST1hari = []
     STberharihari = []
-    st.write(f"KegiatanPerST {range(len(KegiatanPerST))}")
     for x in range(len(KegiatanPerST)):
       # Use .iloc[x] for positional indexing
       # jika terdapat data di tanggal akhir maka lembur lebih dari satu hari
-      st.write(KegiatanPerST['TanggalAkhir'])
       # Changed check to pd.isna
       if pd.isna(KegiatanPerST['TanggalAkhir'].iloc[x]):
         ST1hari.append(KegiatanPerST['TanggalAwal'].iloc[x].strftime("%d %b %Y"))
@@ -288,9 +280,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
         while current_date <= end_date:
             STberharihari.append(current_date.strftime("%d %b %Y"))
             current_date += delta
-
-    st.write(ST1hari)
-    st.write(STberharihari)
+            
     # jika jumlah hari lembur lebih dari satu hari
     # maka dibuat teks tanggal lembur dari dan sampai dengan
 
