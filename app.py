@@ -592,7 +592,7 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
   else:
     st.warning(f"Employee '{nm}' not found in the activity list for the selected month.")
 
-col1, col2, col3 = st.columns([0.2, 0.2, 0.6]) # Removed the third column
+col1, col2 = st.columns([0.2, 0.8]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
     download_ST(filtered_Kegiatan, Kegiatan, karyawan_df)
@@ -604,8 +604,7 @@ with col2:
     # The remaining arguments are the template files and URL
     generate_monthly_report(filtered_Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
                             temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
-with col3:
-  st.write("")
+
 st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear Cache' dan Refresh halaman*")
 st.markdown("***'Clear Cache' dapat dilakukan melalui menu titik tiga di pojok kanan atas*")
