@@ -556,7 +556,7 @@ with col2:
     # 'search_name' is the employee name (nm)
     # 'selected_month_num' is the month number (bulan)
     # The remaining arguments are the template files and URL
-    generate_monthly_report(Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
+    generate_monthly_report(filtered_Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
                             temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 with col3:
   st.write("")
