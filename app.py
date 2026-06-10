@@ -94,12 +94,12 @@ st.dataframe(
     filtered_Kegiatan_display, 
     width="stretch",
     column_config={
-        "NoSurat": st.column_config.Column(width="50"),
-        "Keterangan": st.column_config.Column(width="small"),
-        "Karyawan": st.column_config.Column(width="large"),
-        "Lokasi": st.column_config.Column(width="small"),
-        "JangkaWaktu": st.column_config.Column(width="small"),
-        "Kegiatan": st.column_config.Column(width="medium"),
+        "NoSurat": st.column_config.Column(width=None),
+        "Keterangan": st.column_config.Column(width=None),
+        "Karyawan": st.column_config.Column(width=None),
+        "Lokasi": st.column_config.Column(width=None),
+        "JangkaWaktu": st.column_config.Column(width=None),
+        "Kegiatan": st.column_config.Column(width=None),
     }
     )
 
