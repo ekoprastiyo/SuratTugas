@@ -61,7 +61,7 @@ st.markdown(
 
     # Reduce padding at the top of the sidebar
     [data-testid="stSidebarUserContent"] {
-        padding-top: 3rem;
+        padding-top: 1rem;
     }
     </style>
     """,
