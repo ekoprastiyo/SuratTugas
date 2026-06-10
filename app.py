@@ -92,7 +92,7 @@ if search_name != "All":
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
 st.dataframe(
     filtered_Kegiatan_display, 
-    width="stretch"
+    width="stretch",
     column_config={
         "NoSurat": st.column_config.Column(width="50"),
         "Keterangan": st.column_config.Column(width="small"),
