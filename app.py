@@ -90,7 +90,18 @@ if search_name != "All":
     filtered_Kegiatan = filtered_Kegiatan[filtered_Kegiatan['Karyawan'].str.contains(search_name, case=False, na=False)]
 
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
-st.dataframe(filtered_Kegiatan_display, width="stretch")
+st.dataframe(
+    filtered_Kegiatan_display, 
+    width="stretch"
+    column_config={
+        "NoSurat": st.column_config.Column(width="50"),
+        "Keterangan": st.column_config.Column(width="small"),
+        "Karyawan": st.column_config.Column(width="large"),
+        "Lokasi": st.column_config.Column(width="small"),
+        "JangkaWaktu": st.column_config.Column(width="small"),
+        "Kegiatan": st.column_config.Column(width="medium"),
+    }
+    )
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
