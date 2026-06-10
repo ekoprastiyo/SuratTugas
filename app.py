@@ -569,4 +569,6 @@ with col2:
                             temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 with col3:
   st.write("")
-st.markdown("*Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
+st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
+st.markdown("***Jika Update Spreadsheet, lakukan 'Clear Cache' dan Refresh halaman*")
+st.markdown("***'Clear Cache dapat dilakukan melalui menu titik tiga di pojok kanan atas")
