@@ -34,6 +34,8 @@ def load_data():
     karyawan_df = pd.read_excel(url, sheet_name='Karyawan_ST')
     kegiatan_df['TanggalAwal'] = pd.to_datetime(kegiatan_df['TanggalAwal'], format='%d/%m/%Y', errors='coerce')
     kegiatan_df['TanggalAkhir'] = pd.to_datetime(kegiatan_df['TanggalAkhir'], format='%d/%m/%Y', errors='coerce') # Corrected typo here
+    # Filter out rows where 'Karyawan' is '-'
+    kegiatan_df = kegiatan_df[kegiatan_df['Karyawan'] != '-']
     return kegiatan_df, karyawan_df
 
 # Call load_data once. It will use cache if available, or fetch fresh data if cache cleared by the button.
