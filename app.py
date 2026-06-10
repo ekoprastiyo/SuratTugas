@@ -215,6 +215,7 @@ def tgl_lembur_di_surat_perintah(list_tgl):
 
 def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
 
+  st.dataframe(df)
   # Filter nomor surat
   ListST = list(df["NoSurat"].unique())
   st.write(f"Jumlah Surat Lembur : {len(ListST)}")
