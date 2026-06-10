@@ -66,13 +66,7 @@ st.markdown(
 )
 
 # --- Streamlit UI Components --- #
-st.title('Surat Tugas Kanwil X')
-col1, col2 = st.columns([0.55, 0.45]) # Removed the third column
-with col1:
-  st.write('Displaying the DataFrame:')
-with col2:
-  st.markdown(f"<div style='text-align: right;'><a href='https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/' target='_blank'>Go to Spreadsheet</a></div>", unsafe_allow_html=True)
-
+# --- Sidebar Content --- #
 st.sidebar.header('Filter Options')
 
 options = ["All", "Selesai", "Belum Selesai"]
@@ -109,6 +103,24 @@ if selected_month_num != 0:
 
 if search_name != "All":
     filtered_Kegiatan = filtered_Kegiatan[filtered_Kegiatan['Karyawan'].str.contains(search_name, case=False, na=False)]
+
+# 1. Create a button in the app
+if st.button("Clear App Cache"):
+    # 2. Clear both data and function caches
+    st.cache_data.clear()
+    st.cache_resource.clear()
+    
+    # 3. Show success message and rerun to refresh the page
+    st.success("Cache cleared successfully!")
+    st.rerun()
+    
+# --- Main Content --- #
+st.title('Surat Tugas Kanwil X')
+col1, col2 = st.columns([0.55, 0.45]) # Removed the third column
+with col1:
+  st.write('Displaying the DataFrame:')
+with col2:
+  st.markdown(f"<div style='text-align: right;'><a href='https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/' target='_blank'>Go to Spreadsheet</a></div>", unsafe_allow_html=True)
 
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
 st.dataframe(
