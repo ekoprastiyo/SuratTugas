@@ -76,7 +76,7 @@ selected_month_num = months[selected_month_name]
 
 list_name = Karyawan['Nama'].to_list()
 list_name.insert(0, "All")
-search_name = st.sidebar.selectbox('Search by Employee Name', List_name)
+search_name = st.sidebar.selectbox('Search by Employee Name', list_name)
 
 filtered_Kegiatan = Kegiatan.copy()
 
