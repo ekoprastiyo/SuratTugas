@@ -256,6 +256,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
     TanggalKegiatanPerST = []
     ST1hari = []
     STberharihari = []
+    st.write(f"KegiatanPerST {range(len(KegiatanPerST))}")
     for x in range(len(KegiatanPerST)):
       # Use .iloc[x] for positional indexing
       # jika terdapat data di tanggal akhir maka lembur lebih dari satu hari
