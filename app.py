@@ -280,7 +280,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
         while current_date <= end_date:
             STberharihari.append(current_date.strftime("%d %b %Y"))
             current_date += delta
-            
+
     # jika jumlah hari lembur lebih dari satu hari
     # maka dibuat teks tanggal lembur dari dan sampai dengan
 
@@ -558,7 +558,7 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
 col1, col2, col3 = st.columns([0.2, 0.2, 0.6]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
-    download_ST(filtered_Kegiatan, Kegiatan, Karyawan)
+    download_ST(filtered_Kegiatan, Kegiatan, karyawan_df)
 with col2:
   if st.button('Generate Surat Lembur'):
     # Make sure to pass the correct arguments to generate_monthly_report
