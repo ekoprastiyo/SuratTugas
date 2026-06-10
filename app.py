@@ -55,9 +55,6 @@ st.markdown(
         margin-top: -2rem;
     }
     /* Optional: Remove padding from the header area */
-    header {
-        visibility: hidden;
-    }
 
     # Reduce padding at the top of the sidebar
     [data-testid="stSidebarUserContent"] {
