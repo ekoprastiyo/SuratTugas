@@ -227,6 +227,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
   for i in ListST:
     #filter kegiatan lembur per satu surat tugas
     KegiatanPerST = df[df['NoSurat'] == int(i)].reset_index(drop=True)
+    st.write(KegiatanPerST)
 
     #data kegiatan yang diinput dalam surat tugas
     # 1. Nama Kegiatan
@@ -246,6 +247,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
     # menghitung jumlah orang per surat tugas
     JumlahOrg = len(KegiatanPerST["Karyawan"].iloc[0].split(","))
     JumlahOrang = f'{JumlahOrg} ({num2words(JumlahOrg, lang='id')})'
+    st.write(f"Jumlah orang {JumlahOrang}")
 
 
     # 4. Jangka Waktu Lembur
