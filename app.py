@@ -96,11 +96,17 @@ def merge_docx_files(master_path, files_to_append, output_path):
     master.add_page_break()
     composer = Composer(master)
 
-    for file_path in files_to_append:
-        doc_to_append = Document(file_path)
+    # for file_path in files_to_append:
+    #     doc_to_append = Document(file_path)
+    #     doc_to_append.add_page_break()
+    #     composer.append(doc_to_append)
+    for i, file_path in enumerate(files_to_append):
+      # Load each additional document
+      doc_to_append = Document(file_path)
+      if i == 0:
         doc_to_append.add_page_break()
-        composer.append(doc_to_append)
-
+      # Append it to the master while preserving formatting
+      composer.append(doc_to_append)
     composer.save(output_path)
 
 def angka_ke_bulan(angka):
