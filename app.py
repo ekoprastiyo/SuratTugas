@@ -6,6 +6,7 @@ st.set_page_config(layout='wide') # Set the page layout to wide
 import sys
 sys.path.append('/content/drive/My Drive/Python/Packages/')
 import pandas as pd
+import numpy as np
 from io import BytesIO
 import requests
 from datetime import datetime, timedelta
