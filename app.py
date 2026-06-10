@@ -50,13 +50,18 @@ st.markdown(
     <style>
     /* Remove padding from the main content container */
     .block-container {
-        padding-top: 1rem;
+        padding-top: 3rem;
         padding-bottom: 0rem;
         margin-top: -2rem;
     }
     /* Optional: Remove padding from the header area */
     header {
         visibility: hidden;
+    }
+
+    # Reduce padding at the top of the sidebar
+    [data-testid="stSidebarUserContent"] {
+        padding-top: 3rem;
     }
     </style>
     """,
