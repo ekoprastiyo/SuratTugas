@@ -86,7 +86,7 @@ if Status_surat != "All":
 if selected_month_num != 0:
     filtered_Kegiatan = filtered_Kegiatan[filtered_Kegiatan['TanggalAwal'].dt.month == selected_month_num]
 
-if search_name:
+if search_name != "All":
     filtered_Kegiatan = filtered_Kegiatan[filtered_Kegiatan['Karyawan'].str.contains(search_name, case=False, na=False)]
 
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
