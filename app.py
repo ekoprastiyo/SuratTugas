@@ -74,7 +74,9 @@ except ValueError:
 selected_month_name = st.sidebar.selectbox('Select Month', list(months.keys()), index=default_month_index)
 selected_month_num = months[selected_month_name]
 
-search_name = st.sidebar.selectbox('Search by Employee Name', Karyawan['Nama'].to_list())
+list_name = Karyawan['Nama'].to_list()
+list_name.insert(0, "All")
+search_name = st.sidebar.selectbox('Search by Employee Name', List_name)
 
 filtered_Kegiatan = Kegiatan.copy()
 
