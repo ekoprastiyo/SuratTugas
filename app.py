@@ -105,7 +105,7 @@ if search_name != "All":
     filtered_Kegiatan = filtered_Kegiatan[filtered_Kegiatan['Karyawan'].str.contains(search_name, case=False, na=False)]
 
 # 1. Create a button in the app
-if st.button("Clear App Cache"):
+if st.sidebar.button("Clear App Cache"):
     # 2. Clear both data and function caches
     st.cache_data.clear()
     st.cache_resource.clear()
@@ -113,7 +113,7 @@ if st.button("Clear App Cache"):
     # 3. Show success message and rerun to refresh the page
     st.success("Cache cleared successfully!")
     st.rerun()
-    
+
 # --- Main Content --- #
 st.title('Surat Tugas Kanwil X')
 col1, col2 = st.columns([0.55, 0.45]) # Removed the third column
