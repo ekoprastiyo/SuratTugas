@@ -44,6 +44,25 @@ def load_data():
 # Call load_data once. It will use cache if available, or fetch fresh data if cache cleared by the button.
 Kegiatan, Karyawan, karyawan_df = load_data()
 
+# --- CSS ---#
+st.markdown(
+    """
+    <style>
+    /* Remove padding from the main content container */
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 0rem;
+        margin-top: -2rem;
+    }
+    /* Optional: Remove padding from the header area */
+    header {
+        visibility: hidden;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
 col1, col2 = st.columns([0.55, 0.45]) # Removed the third column
