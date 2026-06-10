@@ -32,15 +32,17 @@ url = "https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPS
 @st.cache_data(ttl=3600) # Cache data for 1 hour by default
 def load_data():
     kegiatan_df = pd.read_excel(url, sheet_name='Kegiatan', header=2)
+    # Vendor EPS dibuatkan Lembar Absensi
+    Karyawan = pd.read_excel(url, sheet_name='Karyawan')
     karyawan_df = pd.read_excel(url, sheet_name='Karyawan_ST')
     kegiatan_df['TanggalAwal'] = pd.to_datetime(kegiatan_df['TanggalAwal'], format='%d/%m/%Y', errors='coerce')
     kegiatan_df['TanggalAkhir'] = pd.to_datetime(kegiatan_df['TanggalAkhir'], format='%d/%m/%Y', errors='coerce') # Corrected typo here
     # Filter out rows where 'Karyawan' is '-'
     kegiatan_df = kegiatan_df[kegiatan_df['Karyawan'] != '-']
-    return kegiatan_df, karyawan_df
+    return kegiatan_df, Karyawan, karyawan_df
 
 # Call load_data once. It will use cache if available, or fetch fresh data if cache cleared by the button.
-Kegiatan, Karyawan = load_data()
+Kegiatan, Karyawan, karyawan_df = load_data()
 
 # --- Streamlit UI Components --- #
 st.title('Surat Tugas Kanwil X')
