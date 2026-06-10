@@ -217,6 +217,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
 
   # Filter nomor surat
   ListST = list(df["NoSurat"].unique())
+  st.write(f"Jumlah Surat Lembur : {len(ListST)}"
 
   # List dictionary
   list_dicts = []
@@ -269,6 +270,8 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
             STberharihari.append(current_date.strftime("%d %b %Y"))
             current_date += delta
 
+    st.write(ST1hari)
+    st.write(STberharihari)
     # jika jumlah hari lembur lebih dari satu hari
     # maka dibuat teks tanggal lembur dari dan sampai dengan
 
