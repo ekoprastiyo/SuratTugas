@@ -436,7 +436,7 @@ if not st.session_state.is_uploaded:
 
 # Restart Upload berkas PDF
 st.session_state.is_uploaded = False
-st.rerun()
+# st.rerun()
 
 # # JIKA FILE SUDAH DI-UPLOAD: Tampilkan tombol Reset sebagai gantinya
 # else:
