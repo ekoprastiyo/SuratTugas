@@ -938,11 +938,15 @@ st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 #   st.pdf(pdf_100)
 
 def display_pdf(jalur_file):
-    # Menggunakan fungsi bawaan st.pdf tanpa library tambahan (tanpa fitz)
+  try:
     # Parameter height="stretch" akan menyesuaikan tinggi jendela pop-up
     st.pdf(jalur_file, height="stretch")
+  except (FileNotFoundError, Exception):
+    # Jika file tidak ditemukan atau ada masalah pembacaan
+    st.error(f"⚠️ Berkas '{jalur_file}' tidak ditemukan atau gagal dimuat. Pastikan file sudah diunggah ke folder proyek.")
+
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
-pdf_icon = "📄"
-if st.button(pdf_icon):
+# pdf_icon = "📄"
+if st.button(icon=":material/visibility:"):
     display_pdf(pdf_100)
