@@ -931,4 +931,4 @@ st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
-pdf_viewer(pdf_100)
+st.pdf(pdf_100)
