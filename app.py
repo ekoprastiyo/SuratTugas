@@ -932,8 +932,8 @@ with col2:
 st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe***")
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
+@st.dialog("Pratinjau Dokumen", width="large")
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
 # Menampilkan ke halaman Streamlit
-st.image(pdf_to_image_basic(pdf_100, "pdf_viewer"), use_container_width=True)
-
-# st.pdf(pdf_100)
+if st.button("buka pdf"):
+  st.pdf(pdf_100)
