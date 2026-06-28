@@ -279,14 +279,14 @@ if "is_uploaded" not in st.session_state:
     st.session_state.is_uploaded = False
 
 # Sediakan wadah kosong (st.empty) yang bisa kita bongkar-pasang isinya
-form_placeholder = st.empty()
+form_placeholder = st.sidebar.empty()
 
 # Bungkus Uploader ke dalam Form agar tidak langsung memicu kode di bawahnya
 # JIKA FILE BELUM DI-UPLOAD: Tampilkan Form beserta tombolnya
 if not st.session_state.is_uploaded:
   with form_placeholder.form("upload_form", clear_on_submit=True):
-    uploaded_file = st.sidebar.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
-    submit_button = st.sidebar.form_submit_button("Proses")
+    uploaded_file = st.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
+    submit_button = st.form_submit_button("Proses")
 
   if submit_button and uploaded_file is not None:
     with st.sidebar.spinner("Preparing the download file..."):
