@@ -404,22 +404,22 @@ if not st.session_state.is_uploaded:
                       repo.create_file(path=github_file_path, message=f"Upload massal {filename}", content=file_bytes, branch="main")
                   pushed_count += 1
 
-                  # Clean up the temporary uploaded PDF file
-                  os.remove(temp_uploaded_pdf_path)
-
-                  # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
-                  shutil.rmtree(LOCAL_TMP_DIR)
-
-                  # UBAH SAKLAR MENJADI TRUE: Form otomatis hilang pada rerun instan ini
-                  st.session_state.is_uploaded = True
-
-                  # Kosongkan wadah form agar menghilang dari layar
-                  form_placeholder.empty() 
-
               except Exception as e:
                   st.error(f"Gagal mengunggah {filename}: {e}")
 
       st.sidebar.write(f"Berhasil membuat {len(nama_karyawan)} file Surat Tugas.")
+
+      # Clean up the temporary uploaded PDF file
+      os.remove(temp_uploaded_pdf_path)
+
+      # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
+      shutil.rmtree(LOCAL_TMP_DIR)
+
+      # UBAH SAKLAR MENJADI TRUE: Form otomatis hilang pada rerun instan ini
+      st.session_state.is_uploaded = True
+
+      # Kosongkan wadah form agar menghilang dari layar
+      form_placeholder.empty()
 
 
     # Now open the created zip file in binary read mode
