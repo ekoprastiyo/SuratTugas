@@ -933,7 +933,6 @@ st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
 @st.dialog("Pratinjau Dokumen", width="large")
-pdf_100 = "Surat_Tugas_PDF/100.pdf"
 # Menampilkan ke halaman Streamlit
 # if st.button("buka pdf"):
 #   st.pdf(pdf_100)
@@ -943,5 +942,6 @@ def display_pdf(jalur_file):
     # Parameter height="stretch" akan menyesuaikan tinggi jendela pop-up
     st.pdf(jalur_file, height="stretch")
 
+pdf_100 = "Surat_Tugas_PDF/100.pdf"
 if st.button("📄"):
     display_pdf(pdf_100)
