@@ -298,7 +298,7 @@ if uploaded_file is not None:
     nosurat = image_to_text("temp_folder", "output_folder")
     nosurat = [int(x) for x in nosurat]
     # st.write(nosurat)
-    st.write("isi folder output_folder", os.listdir("output_folder"))
+    # st.write("isi folder output_folder", os.listdir("output_folder"))
 
     # 4. filter Kegiatan dataframe based on list No. Surat 
 
@@ -370,23 +370,7 @@ if uploaded_file is not None:
 
     # st.write("Isi Folder scan", os.listdir("scan"))
     
-
-    # Now open the created zip file in binary read mode
-    with open(zip_file_path, "rb") as file:
-          st.sidebar.download_button(
-              label="Download Scanned PDF",
-              data=file,
-              file_name="ST_Scanned.zip",
-              # excel : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              # word : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              # pdf : "application/pdf"
-              mime="application/zip"
-          )
-
-    # Clean up the temporary uploaded PDF file
-    os.remove(temp_uploaded_pdf_path)
-
-  # 4. PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
+  # PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
   pushed_count = 0
   LOCAL_TMP_DIR = "output_folder"
   TARGET_SUBFOLDER = "Surat_Tugas_PDF"
@@ -410,10 +394,26 @@ if uploaded_file is not None:
           except Exception as e:
               st.error(f"Gagal mengunggah {filename}: {e}")
 
-  # 5. Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
+  st.sidebar.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
+
+  # Now open the created zip file in binary read mode
+  with open(zip_file_path, "rb") as file:
+        st.sidebar.download_button(
+            label="Download Scanned PDF",
+            data=file,
+            file_name="ST_Scanned.zip",
+            # excel : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            # word : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            # pdf : "application/pdf"
+            mime="application/zip"
+        )
+
+  # Clean up the temporary uploaded PDF file
+  os.remove(temp_uploaded_pdf_path)
+
+  # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
   shutil.rmtree(LOCAL_TMP_DIR)
 
-  st.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
