@@ -26,6 +26,7 @@ import re
 from github import Github
 from github.GithubException import GithubException
 from num2words import num2words # Add num2words import
+from streamlit_pdf_viewer import pdf_viewer
 
 # --- Github --- #
 # 1. Inisialisasi API GitHub dari Streamlit Secrets
@@ -930,4 +931,4 @@ st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
-st.pdf(pdf_100)
+pdf_viewer(pdf_100)
