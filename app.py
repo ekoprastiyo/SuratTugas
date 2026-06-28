@@ -948,5 +948,5 @@ def display_pdf(jalur_file):
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
 # pdf_icon = "📄"
-if st.button(icon=":material/visibility:"):
+if st.button("lihat dokumen", icon=":material/visibility:"):
     display_pdf(pdf_100)
