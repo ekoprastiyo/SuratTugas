@@ -224,7 +224,6 @@ def image_to_text(image_folder, output_folder):
 
       first_number = re.search(r'\d+', text[Idx_no:])
       Filename = first_number.group()
-      st.write("dalam function image_to_text", int(Filename))
       # print(str(int(first_number)))  # Output: 45
       No_Surat.append(str(int(Filename)))
       # os.rename(full_image_path, os.path.join(image_folder, f"{Filename}.jpg"))
