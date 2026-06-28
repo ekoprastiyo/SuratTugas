@@ -150,11 +150,20 @@ with col1:
 with col2:
   st.markdown(f"<div style='text-align: right;'><a href='https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/' target='_blank'>Go to Spreadsheet</a></div>", unsafe_allow_html=True)
 
+
+def link_views(df, cols):
+  nosurat = df['NoSurat'].tolist()
+  link_folder_pdf = "Surat_Tugas_PDF"
+  link_pdf = [f'{link_folder_pdf}/{x}.pdf' for x in nosurat]
+  df.insert(0, cols, link_pdf)
+  
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
+link_views(filtered_Kegiatan_display, "View")
 st.dataframe(
     filtered_Kegiatan_display,
     width="stretch",
     column_config={
+        "View": st.column_config.LinkColumn(display_text="📄", width=None),
         "NoSurat": st.column_config.Column(width=None),
         "Keterangan": st.column_config.Column(width=None),
         "Karyawan": st.column_config.Column(width=None),
