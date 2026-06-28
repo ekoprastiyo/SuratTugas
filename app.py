@@ -179,6 +179,24 @@ event = st.dataframe(
 @st.dialog("Pratinjau Dokumen", width="medium")
 def display_pdf(jalur_file):
   try:
+    # Membaca file PDF ke dalam memori untuk tombol unduh
+    with open(jalur_file, "rb") as file:
+        konten_pdf = file.read()
+    
+    # Membuat tata letak kolom agar tombol unduh terlihat rapi di atas
+    col1, col2 = st.columns([4, 1])
+    with col1:
+        st.write(f"📄 Menampilkan: **{os.path.basename(jalur_file)}**")
+    with col2:
+        # Tombol Unduh langsung di dalam dialog
+        st.download_button(
+            label="Unduh",
+            data=konten_pdf,
+            file_name=os.path.basename(jalur_file),
+            mime="application/pdf",
+            icon=":material/download:",
+            use_container_width=True
+        )
     # Parameter height="stretch" akan menyesuaikan tinggi jendela pop-up
     st.pdf(jalur_file, height="stretch")
   except (FileNotFoundError, Exception):
