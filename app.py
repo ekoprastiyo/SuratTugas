@@ -23,8 +23,19 @@ import shutil
 import pymupdf
 import zipfile
 import re
-
+from github import Github
+from github.GithubException import GithubException
 from num2words import num2words # Add num2words import
+
+# --- Github --- #
+# 1. Inisialisasi API GitHub dari Streamlit Secrets
+GIT_TOKEN = st.secrets["GIT_TOKEN"]
+GIT_USERNAME = st.secrets["GIT_USERNAME"]
+GIT_REPO = st.secrets["GIT_REPO"]
+
+g = Github(GIT_TOKEN)
+repo = g.get_repo(f"{GIT_USERNAME}/{GIT_REPO}")
+
 
 # --- Configuration --- #
 template_file = 'ST26-template.docx'
@@ -335,6 +346,7 @@ if uploaded_file is not None:
       # st.write('listdir inside loop')
       # st.write(os.listdir("scan"))
       list_st_pdf.append(f"ST_{NIK_Karyawan}_{nm}.pdf")
+
     # 7. after get all the pdf, zip it
     # 8. make download button
 
@@ -374,6 +386,34 @@ if uploaded_file is not None:
     # Clean up the temporary uploaded PDF file
     os.remove(temp_uploaded_pdf_path)
 
+  # 4. PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
+  pushed_count = 0
+  LOCAL_TMP_DIR = "output_folder"
+  TARGET_SUBFOLDER = "Surat_Tugas_PDF"
+  for filename in os.listdir(LOCAL_TMP_DIR):
+      file_path = os.path.join(LOCAL_TMP_DIR, filename)
+      
+      if os.path.isfile(file_path):
+          with open(file_path, "rb") as f:
+              file_bytes = f.read()
+              
+          github_file_path = f"{TARGET_SUBFOLDER}/{filename}"
+          
+          try:
+              # Cek dan unggah ke GitHub
+              try:
+                  existing_file = repo.get_contents(github_file_path)
+                  repo.update_file(path=github_file_path, message=f"Update massal {filename}", content=file_bytes, sha=existing_file.sha, branch="main")
+              except Exception:
+                  repo.create_file(path=github_file_path, message=f"Upload massal {filename}", content=file_bytes, branch="main")
+              pushed_count += 1
+          except Exception as e:
+              st.error(f"Gagal mengunggah {filename}: {e}")
+
+  # 5. Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
+  shutil.rmtree(LOCAL_TMP_DIR)
+
+  st.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
