@@ -405,6 +405,12 @@ if not st.session_state.is_uploaded:
                       repo.create_file(path=github_file_path, message=f"Upload massal {filename}", content=file_bytes, branch="main")
                   pushed_count += 1
 
+                  # Clean up the temporary uploaded PDF file
+                  os.remove(temp_uploaded_pdf_path)
+
+                  # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
+                  shutil.rmtree(LOCAL_TMP_DIR)
+
                   # UBAH SAKLAR MENJADI TRUE: Form otomatis hilang pada rerun instan ini
                   st.session_state.is_uploaded = True
 
@@ -428,12 +434,6 @@ if not st.session_state.is_uploaded:
               # pdf : "application/pdf"
               mime="application/zip"
           )
-
-  # Clean up the temporary uploaded PDF file
-  os.remove(temp_uploaded_pdf_path)
-
-  # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
-  shutil.rmtree(LOCAL_TMP_DIR)
 
 # Restart Upload berkas PDF
 st.session_state.is_uploaded = False
