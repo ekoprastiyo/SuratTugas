@@ -429,10 +429,10 @@ if not st.session_state.is_uploaded:
           )
 
   # Clean up the temporary uploaded PDF file
-  os.remove(temp_uploaded_pdf_path)
+  # os.remove(temp_uploaded_pdf_path)
 
   # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
-  shutil.rmtree(LOCAL_TMP_DIR)
+  # shutil.rmtree(LOCAL_TMP_DIR)
 
 # 5. JIKA FILE SUDAH DI-UPLOAD: Tampilkan tombol Reset sebagai gantinya
 else:
