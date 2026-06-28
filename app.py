@@ -260,35 +260,39 @@ def image_to_text(image_folder, output_folder):
     No_Surat = []
     list_jpg = sorted(os.listdir(image_folder))
     for i, st in enumerate(list_jpg):
-      # Open the image using PIL
-      full_image_path = os.path.join(image_folder, st) # Construct the full path
-      image_file = Image.open(full_image_path)
+      try:
+        # Open the image using PIL
+        full_image_path = os.path.join(image_folder, st) # Construct the full path
+        image_file = Image.open(full_image_path)
 
-      # Use pytesseract to extract text from the image
-      text = pytesseract.image_to_string(image_file)
+        # Use pytesseract to extract text from the image
+        text = pytesseract.image_to_string(image_file)
 
-      # Searching the index of "Nomor : "
-      Idx_no = text.find("Nomor : ") # + 8
-      # Filename = text[Idx_no:Idx_no+3]
+        # Searching the index of "Nomor : "
+        Idx_no = text.find("Nomor : ") # + 8
+        # Filename = text[Idx_no:Idx_no+3]
 
-      first_number = re.search(r'\d+', text[Idx_no:])
-      Filename = first_number.group()
-      # print(str(int(first_number)))  # Output: 45
-      No_Surat.append(str(int(Filename)))
-      # os.rename(full_image_path, os.path.join(image_folder, f"{Filename}.jpg"))
+        first_number = re.search(r'\d+', text[Idx_no:])
+        Filename = first_number.group()
+        # print(str(int(first_number)))  # Output: 45
+        No_Surat.append(str(int(Filename)))
+        # os.rename(full_image_path, os.path.join(image_folder, f"{Filename}.jpg"))
 
-      # Convert it back to pdf with the right filename
-      # 1. Open the image file
-      image_doc = pymupdf.open(full_image_path)
-      # 2. Convert the image_file to PDF bytes
-      pdf_bytes = image_doc.convert_to_pdf()
-      # 3. Open the PDF bytes as a new PDF document
-      pdf_doc = pymupdf.open("pdf", pdf_bytes)
-      # 4. Save the PDF
-      os.makedirs(output_folder, exist_ok=True)
-      pdf_doc.save(f"{output_folder}/{str(int(Filename))}.pdf")
-      image_doc.close()
-      pdf_doc.close()
+        # Convert it back to pdf with the right filename
+        # 1. Open the image file
+        image_doc = pymupdf.open(full_image_path)
+        # 2. Convert the image_file to PDF bytes
+        pdf_bytes = image_doc.convert_to_pdf()
+        # 3. Open the PDF bytes as a new PDF document
+        pdf_doc = pymupdf.open("pdf", pdf_bytes)
+        # 4. Save the PDF
+        os.makedirs(output_folder, exist_ok=True)
+        pdf_doc.save(f"{output_folder}/{str(int(Filename))}.pdf")
+        image_doc.close()
+        pdf_doc.close()
+      except Exception as e:
+        print(f"Error processing image {st}: {e}")
+        continue
     return No_Surat
 
 def merge_pdfs(pdf_list, output_path, output_file):
