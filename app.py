@@ -948,5 +948,6 @@ def display_pdf(jalur_file):
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
 # pdf_icon = "📄"
-if st.button("", icon=":material/visibility:"):
+# all icon : https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
+if st.button("", icon=":material/visibility:", type="tertiary"):
     display_pdf(pdf_100)
