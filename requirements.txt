@@ -8,6 +8,7 @@ numpy
 jinja2
 streamlit
 docxcompose
-IPython
-openpyxl
+pytesseract
 pypdf
+pymupdf
+Pillow
