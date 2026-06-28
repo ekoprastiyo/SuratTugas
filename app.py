@@ -914,18 +914,6 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
   else:
     st.warning(f"Employee '{nm}' not found in the activity list for the selected month.")
 
-# Fungsi untuk membaca file PDF dan mengubahnya ke format Base64
-def display_pdf(file_path):
-  with open(file_path, "rb") as f:
-      base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-  
-  # Membuat URL data Base64 untuk PDF
-  pdf_url = f"data:application/pdf;base64,{base64_pdf}"
-  
-  # Menggunakan st.iframe bawaan (Native) untuk menampilkan PDF
-  # Mengatur height ke 800 piksel agar dokumen terlihat jelas
-  st.iframe(pdf_url, height=800)
-
 col1, col2 = st.columns([0.2, 0.8]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
@@ -945,9 +933,7 @@ st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
-# Panggil fungsi untuk menampilkan PDF
-try:
-  display_pdf(pdf_100)
-except FileNotFoundError:
-  st.error(f"File '{pdf_100}' tidak ditemukan. Pastikan file berada di folder yang sama dengan skrip ini.")
+# Menampilkan ke halaman Streamlit
+st.image(pdf_to_image_basic(pdf_100, "pdf_viewer"), use_container_width=True)
+
 # st.pdf(pdf_100)
