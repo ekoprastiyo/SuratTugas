@@ -27,6 +27,8 @@ from github import Github
 from github.GithubException import GithubException
 from num2words import num2words # Add num2words import
 from streamlit_pdf_viewer import pdf_viewer
+import streamlit.components.v1 as components
+import base64
 
 # --- Github --- #
 # 1. Inisialisasi API GitHub dari Streamlit Secrets
@@ -912,6 +914,17 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
   else:
     st.warning(f"Employee '{nm}' not found in the activity list for the selected month.")
 
+# Fungsi untuk membaca file PDF dan mengubahnya ke format Base64
+def display_pdf(file_path):
+    with open(file_path, "rb") as f:
+        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    
+    # Membuat tag HTML iframe dengan data PDF Base64
+    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
+    
+    # Menampilkan iframe di dalam Streamlit
+    components.html(pdf_display, height=800, scrolling=True)
+
 col1, col2 = st.columns([0.2, 0.8]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
@@ -931,4 +944,9 @@ st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
-st.pdf(pdf_100)
+# Panggil fungsi untuk menampilkan PDF
+try:
+  display_pdf(pdf_100)
+except FileNotFoundError:
+  st.error(f"File '{pdf_100}' tidak ditemukan. Pastikan file berada di folder yang sama dengan skrip ini.")
+# st.pdf(pdf_100)
