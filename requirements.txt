@@ -7,6 +7,8 @@ requests
 numpy
 jinja2
 streamlit
+streamlit[pdf]
+streamlit-pdf-viewer
 docxcompose
 pytesseract
 pypdf
