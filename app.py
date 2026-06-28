@@ -943,5 +943,6 @@ def display_pdf(jalur_file):
     st.pdf(jalur_file, height="stretch")
 
 pdf_100 = "Surat_Tugas_PDF/100.pdf"
-if st.button("📄"):
+pdf_icon = "📄"
+if st.button(pdf_icon):
     display_pdf(pdf_100)
