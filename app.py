@@ -410,6 +410,8 @@ if not st.session_state.is_uploaded:
                   # Kosongkan wadah form agar menghilang dari layar
                   form_placeholder.empty() 
 
+                  st.sidebar.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
+
               except Exception as e:
                   st.error(f"Gagal mengunggah {filename}: {e}")
 
@@ -425,8 +427,6 @@ if not st.session_state.is_uploaded:
               # pdf : "application/pdf"
               mime="application/zip"
           )
-
-  st.sidebar.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
 
   # Clean up the temporary uploaded PDF file
   os.remove(temp_uploaded_pdf_path)
