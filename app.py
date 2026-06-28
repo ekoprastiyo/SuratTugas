@@ -274,128 +274,144 @@ def merge_pdfs(pdf_list, output_path, output_file):
 
 # --- Organized PDF Scanned ---#
 # Upload Berkas Scan PDF Surat Tugas
+# Buat saklar (Session State) untuk melacak status upload
+if "is_uploaded" not in st.session_state:
+    st.session_state.is_uploaded = False
+
+# Sediakan wadah kosong (st.empty) yang bisa kita bongkar-pasang isinya
+form_placeholder = st.empty()
+
 # Bungkus Uploader ke dalam Form agar tidak langsung memicu kode di bawahnya
-with st.form("upload_form", clear_on_submit=True):
-  uploaded_file = st.sidebar.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
-  submit_button = st.form_submit_button("Proses")
+# JIKA FILE BELUM DI-UPLOAD: Tampilkan Form beserta tombolnya
+if not st.session_state.is_uploaded:
+  with form_placeholder.form("upload_form", clear_on_submit=True):
+    uploaded_file = st.sidebar.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
+    submit_button = st.sidebar.form_submit_button("Proses")
 
-if submit_button and uploaded_file is not None:
-  with st.sidebar.spinner("Preparing the download file..."):
-    # Save the uploaded file to a temporary location
-    temp_uploaded_pdf_path = "temp_uploaded.pdf"
-    with open(temp_uploaded_pdf_path, "wb") as f:
-        f.write(uploaded_file.read())
+  if submit_button and uploaded_file is not None:
+    with st.sidebar.spinner("Preparing the download file..."):
+      # Save the uploaded file to a temporary location
+      temp_uploaded_pdf_path = "temp_uploaded.pdf"
+      with open(temp_uploaded_pdf_path, "wb") as f:
+          f.write(uploaded_file.read())
 
-    # 1. convert PDF scanned into images
+      # 1. convert PDF scanned into images
 
-    # satu file pdf dipecah per halaman dalam bentuk jpg
-    pdf_to_image_basic(temp_uploaded_pdf_path, "temp_folder")
-    # st.write(os.listdir("temp_folder"))
+      # satu file pdf dipecah per halaman dalam bentuk jpg
+      pdf_to_image_basic(temp_uploaded_pdf_path, "temp_folder")
+      # st.write(os.listdir("temp_folder"))
 
-    # 2. loop per images, get the No. Surat of the image, also add the No. Surat into list
-    # 3. convert back the image into individual pdf 
+      # 2. loop per images, get the No. Surat of the image, also add the No. Surat into list
+      # 3. convert back the image into individual pdf 
 
-    # dari jpg ke bentuk teks
-    # diambil nomor surat tiap halaman &
-    # mengubah nama file tiap jpg sesuai nomor surat
-    nosurat = image_to_text("temp_folder", "output_folder")
-    nosurat = [int(x) for x in nosurat]
-    # st.write(nosurat)
-    # st.write("isi folder output_folder", os.listdir("output_folder"))
+      # dari jpg ke bentuk teks
+      # diambil nomor surat tiap halaman &
+      # mengubah nama file tiap jpg sesuai nomor surat
+      nosurat = image_to_text("temp_folder", "output_folder")
+      nosurat = [int(x) for x in nosurat]
+      # st.write(nosurat)
+      # st.write("isi folder output_folder", os.listdir("output_folder"))
 
-    # 4. filter Kegiatan dataframe based on list No. Surat 
+      # 4. filter Kegiatan dataframe based on list No. Surat 
 
-    # buat dataframe berdasar tiap nomor surat, hapus duplikat no. surat
-    scanned_df = Kegiatan.copy()
-    scanned_df = scanned_df[scanned_df['NoSurat'].isin(nosurat)]
-    scanned_df = scanned_df.drop_duplicates(subset=['NoSurat'])
-    # st.write(scanned_df)
+      # buat dataframe berdasar tiap nomor surat, hapus duplikat no. surat
+      scanned_df = Kegiatan.copy()
+      scanned_df = scanned_df[scanned_df['NoSurat'].isin(nosurat)]
+      scanned_df = scanned_df.drop_duplicates(subset=['NoSurat'])
+      # st.write(scanned_df)
 
-    # 5. make list of karyawan's name that appear inside Kegiatan dataframe
+      # 5. make list of karyawan's name that appear inside Kegiatan dataframe
 
-    # compile semua nama karyawan, split by comma
-    # nama karyawan dalam surat tugas bulan ini
-    # membuat list isi karyawan
-    # value satu cell yang berisi beberapa nama dipecah berdasar koma
-    nama_karyawan_raw = scanned_df['Karyawan'].fillna('').astype(str).str.split(', ')
-    # kumpulan list tiap cell digabung ke dalam satu list besar
-    nama_karyawan = [item.strip() for sublist in nama_karyawan_raw.tolist() for item in sublist if item.strip()]
-    # filter duplicate list
-    nama_karyawan = list(set(nama_karyawan))
-    # st.write(nama_karyawan)
+      # compile semua nama karyawan, split by comma
+      # nama karyawan dalam surat tugas bulan ini
+      # membuat list isi karyawan
+      # value satu cell yang berisi beberapa nama dipecah berdasar koma
+      nama_karyawan_raw = scanned_df['Karyawan'].fillna('').astype(str).str.split(', ')
+      # kumpulan list tiap cell digabung ke dalam satu list besar
+      nama_karyawan = [item.strip() for sublist in nama_karyawan_raw.tolist() for item in sublist if item.strip()]
+      # filter duplicate list
+      nama_karyawan = list(set(nama_karyawan))
+      # st.write(nama_karyawan)
 
-    # 6. loop per name, combine all the pdf by that name into one pdf
+      # 6. loop per name, combine all the pdf by that name into one pdf
 
-    # for i in list nama:
-    # df contain list nama[i]
-    # df[nosurat].unique
-    # looping semua list nama karyawan lembur
-    list_st_pdf = []
-    for nm in nama_karyawan:
-      # filter surat tugas berdasarkan nama
-      current_kegiatan = scanned_df[scanned_df['Karyawan'].str.contains(nm, na=False)].reset_index(drop=True)
-      # mencari NIK Karyawan berdasarkan nama
-      nik_series = Karyawan.loc[Karyawan['Nama'] == nm, 'NIK']
-      NIK_Karyawan = nik_series.iloc[0] if not nik_series.empty else None
+      # for i in list nama:
+      # df contain list nama[i]
+      # df[nosurat].unique
+      # looping semua list nama karyawan lembur
+      list_st_pdf = []
+      for nm in nama_karyawan:
+        # filter surat tugas berdasarkan nama
+        current_kegiatan = scanned_df[scanned_df['Karyawan'].str.contains(nm, na=False)].reset_index(drop=True)
+        # mencari NIK Karyawan berdasarkan nama
+        nik_series = Karyawan.loc[Karyawan['Nama'] == nm, 'NIK']
+        NIK_Karyawan = nik_series.iloc[0] if not nik_series.empty else None
 
-      # if NIK_Karyawan is None: # Added check
-      #     st.warning(f"NIK not found for employee {nm}.")
-      #     continue # Skip to the next employee if NIK is not found
+        # if NIK_Karyawan is None: # Added check
+        #     st.warning(f"NIK not found for employee {nm}.")
+        #     continue # Skip to the next employee if NIK is not found
 
-      # membuat lokasi folder surat tugas yang telah diupload di gdrive
-      list_st = [f'output_folder/{x}.pdf' for x in current_kegiatan['NoSurat'].unique()]
-      # merge pdf & download
-      merge_pdfs(list_st, "scan", f"ST_{NIK_Karyawan}_{nm}.pdf")
-      # st.write('listdir inside loop')
+        # membuat lokasi folder surat tugas yang telah diupload di gdrive
+        list_st = [f'output_folder/{x}.pdf' for x in current_kegiatan['NoSurat'].unique()]
+        # merge pdf & download
+        merge_pdfs(list_st, "scan", f"ST_{NIK_Karyawan}_{nm}.pdf")
+        # st.write('listdir inside loop')
+        # st.write(os.listdir("scan"))
+        list_st_pdf.append(f"ST_{NIK_Karyawan}_{nm}.pdf")
+
+      # 7. after get all the pdf, zip it
+      # 8. make download button
+
+
+      
+      
+      # st.write("isi folder scan", os.listdir("scan"))
+      # Create the zip file AFTER all individual PDFs are merged into the "scan" folder
       # st.write(os.listdir("scan"))
-      list_st_pdf.append(f"ST_{NIK_Karyawan}_{nm}.pdf")
+      zip_file_path = "scan/ST_Scanned.zip"
+      # Zips the entire 'my_folder' directory into 'backup.zip'
+      # shutil.make_archive(base_name=zip_file_path,  # What to name the final ZIP file
+      #       format="zip",  # The compression format
+      #       root_dir="scan")
+      with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+        for foldername, subfolders, filenames in os.walk("scan"):
+          for filename in filenames:
+            if filename.endswith(".pdf"):
+              file_path = os.path.join(foldername, filename)
+              zipf.write(file_path, os.path.basename(file_path))
 
-    # 7. after get all the pdf, zip it
-    # 8. make download button
+      # st.write("Isi Folder scan", os.listdir("scan"))
+      
+      # PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
+      pushed_count = 0
+      LOCAL_TMP_DIR = "output_folder"
+      TARGET_SUBFOLDER = "Surat_Tugas_PDF"
+      for filename in os.listdir(LOCAL_TMP_DIR):
+          file_path = os.path.join(LOCAL_TMP_DIR, filename)
+          
+          if os.path.isfile(file_path):
+              with open(file_path, "rb") as f:
+                  file_bytes = f.read()
+                  
+              github_file_path = f"{TARGET_SUBFOLDER}/{filename}"
+              
+              try:
+                  # Cek dan unggah ke GitHub
+                  try:
+                      existing_file = repo.get_contents(github_file_path)
+                      repo.update_file(path=github_file_path, message=f"Update massal {filename}", content=file_bytes, sha=existing_file.sha, branch="main")
+                  except Exception:
+                      repo.create_file(path=github_file_path, message=f"Upload massal {filename}", content=file_bytes, branch="main")
+                  pushed_count += 1
 
+                  # UBAH SAKLAR MENJADI TRUE: Form otomatis hilang pada rerun instan ini
+                  st.session_state.is_uploaded = True
 
-    
-    
-    # st.write("isi folder scan", os.listdir("scan"))
-    # Create the zip file AFTER all individual PDFs are merged into the "scan" folder
-    # st.write(os.listdir("scan"))
-    zip_file_path = "scan/ST_Scanned.zip"
-    # Zips the entire 'my_folder' directory into 'backup.zip'
-    # shutil.make_archive(base_name=zip_file_path,  # What to name the final ZIP file
-    #       format="zip",  # The compression format
-    #       root_dir="scan")
-    with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-      for foldername, subfolders, filenames in os.walk("scan"):
-        for filename in filenames:
-          if filename.endswith(".pdf"):
-            file_path = os.path.join(foldername, filename)
-            zipf.write(file_path, os.path.basename(file_path))
+                  # Kosongkan wadah form agar menghilang dari layar
+                  form_placeholder.empty() 
 
-    # st.write("Isi Folder scan", os.listdir("scan"))
-    
-    # PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
-    pushed_count = 0
-    LOCAL_TMP_DIR = "output_folder"
-    TARGET_SUBFOLDER = "Surat_Tugas_PDF"
-    for filename in os.listdir(LOCAL_TMP_DIR):
-        file_path = os.path.join(LOCAL_TMP_DIR, filename)
-        
-        if os.path.isfile(file_path):
-            with open(file_path, "rb") as f:
-                file_bytes = f.read()
-                
-            github_file_path = f"{TARGET_SUBFOLDER}/{filename}"
-            
-            try:
-                # Cek dan unggah ke GitHub
-                try:
-                    existing_file = repo.get_contents(github_file_path)
-                    repo.update_file(path=github_file_path, message=f"Update massal {filename}", content=file_bytes, sha=existing_file.sha, branch="main")
-                except Exception:
-                    repo.create_file(path=github_file_path, message=f"Upload massal {filename}", content=file_bytes, branch="main")
-                pushed_count += 1
-            except Exception as e:
-                st.error(f"Gagal mengunggah {filename}: {e}")
+              except Exception as e:
+                  st.error(f"Gagal mengunggah {filename}: {e}")
 
 
     # Now open the created zip file in binary read mode
@@ -418,6 +434,13 @@ if submit_button and uploaded_file is not None:
   # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
   shutil.rmtree(LOCAL_TMP_DIR)
 
+# 5. JIKA FILE SUDAH DI-UPLOAD: Tampilkan tombol Reset sebagai gantinya
+else:
+  # st.warning("File sudah sukses terkirim ke GitHub.")
+  if st.button("Upload File Baru Lagi"):
+      # Reset saklar ke kondisi awal dan refresh halaman
+      st.session_state.is_uploaded = False
+      st.rerun()
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
