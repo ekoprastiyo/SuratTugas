@@ -932,7 +932,7 @@ with col2:
 st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe***")
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
-@st.dialog("Pratinjau Dokumen", width="large")
+@st.dialog("Pratinjau Dokumen")
 # Menampilkan ke halaman Streamlit
 # if st.button("buka pdf"):
 #   st.pdf(pdf_100)
