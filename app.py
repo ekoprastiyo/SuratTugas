@@ -916,14 +916,15 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
 
 # Fungsi untuk membaca file PDF dan mengubahnya ke format Base64
 def display_pdf(file_path):
-    with open(file_path, "rb") as f:
-        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-    
-    # Membuat tag HTML iframe dengan data PDF Base64
-    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
-    
-    # Menampilkan iframe di dalam Streamlit
-    components.html(pdf_display, height=800, scrolling=True)
+  with open(file_path, "rb") as f:
+      base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+  
+  # Membuat URL data Base64 untuk PDF
+  pdf_url = f"data:application/pdf;base64,{base64_pdf}"
+  
+  # Menggunakan st.iframe bawaan (Native) untuk menampilkan PDF
+  # Mengatur height ke 800 piksel agar dokumen terlihat jelas
+  st.iframe(pdf_url, height=800)
 
 col1, col2 = st.columns([0.2, 0.8]) # Removed the third column
 with col1:
