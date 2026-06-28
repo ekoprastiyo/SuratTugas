@@ -237,7 +237,7 @@ def image_to_text(image_folder, output_folder):
       pdf_doc = pymupdf.open("pdf", pdf_bytes)
       # 4. Save the PDF
       os.makedirs(output_folder, exist_ok=True)
-      pdf_doc.save(f"{output_folder}/{Filename}.pdf")
+      pdf_doc.save(f"{output_folder}/{str(int(Filename))}.pdf")
       image_doc.close()
       pdf_doc.close()
     return No_Surat
