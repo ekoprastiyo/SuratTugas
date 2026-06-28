@@ -410,10 +410,10 @@ if not st.session_state.is_uploaded:
                   # Kosongkan wadah form agar menghilang dari layar
                   form_placeholder.empty() 
 
-                  st.sidebar.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
-
               except Exception as e:
                   st.error(f"Gagal mengunggah {filename}: {e}")
+
+      st.sidebar.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
 
 
     # Now open the created zip file in binary read mode
@@ -437,7 +437,7 @@ if not st.session_state.is_uploaded:
 # 5. JIKA FILE SUDAH DI-UPLOAD: Tampilkan tombol Reset sebagai gantinya
 else:
   # st.warning("File sudah sukses terkirim ke GitHub.")
-  if st.button("Upload File Baru Lagi"):
+  if st.sidebar.button("Upload File Baru Lagi"):
       # Reset saklar ke kondisi awal dan refresh halaman
       st.session_state.is_uploaded = False
       st.rerun()
