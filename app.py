@@ -285,11 +285,11 @@ form_placeholder = st.sidebar.empty()
 # JIKA FILE BELUM DI-UPLOAD: Tampilkan Form beserta tombolnya
 if not st.session_state.is_uploaded:
   with form_placeholder.form("upload_form", clear_on_submit=True):
-    uploaded_file = st.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
+    uploaded_file = st.file_uploader("Kelola Berkas PDF Surat Tugas", type=["pdf"])
     submit_button = st.form_submit_button("Proses")
 
   if submit_button and uploaded_file is not None:
-    with st.sidebar.spinner("Preparing the download file..."):
+    with st.sidebar.spinner("Preparing to download the file..."):
       # Save the uploaded file to a temporary location
       temp_uploaded_pdf_path = "temp_uploaded.pdf"
       with open(temp_uploaded_pdf_path, "wb") as f:
@@ -434,13 +434,17 @@ if not st.session_state.is_uploaded:
   # Bersihkan folder /tmp setelah selesai agar tidak memenuhi memori server
   # shutil.rmtree(LOCAL_TMP_DIR)
 
-# 5. JIKA FILE SUDAH DI-UPLOAD: Tampilkan tombol Reset sebagai gantinya
-else:
-  # st.warning("File sudah sukses terkirim ke GitHub.")
-  if st.sidebar.button("Upload File Baru Lagi"):
-      # Reset saklar ke kondisi awal dan refresh halaman
-      st.session_state.is_uploaded = False
-      st.rerun()
+# Restart Upload berkas PDF
+st.session_state.is_uploaded = False
+st.rerun()
+
+# # JIKA FILE SUDAH DI-UPLOAD: Tampilkan tombol Reset sebagai gantinya
+# else:
+#   # st.warning("File sudah sukses terkirim ke GitHub.")
+#   if st.sidebar.button("Upload File Baru Lagi"):
+#       # Reset saklar ke kondisi awal dan refresh halaman
+#       st.session_state.is_uploaded = False
+#       st.rerun()
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
@@ -910,11 +914,11 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
 col1, col2 = st.columns([0.2, 0.8]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
-    with st.spinner("Preparing the download file..."):
+    with st.spinner("Preparing to download the file..."):
       download_ST(filtered_Kegiatan, Kegiatan, karyawan_df)
 with col2:
   if st.button('Generate Surat Lembur'):
-    with st.spinner("Preparing the download file..."):
+    with st.spinner("Preparing to download the file..."):
       # Make sure to pass the correct arguments to generate_monthly_report
       # 'search_name' is the employee name (nm)
       # 'selected_month_num' is the month number (bulan)
