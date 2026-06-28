@@ -309,8 +309,8 @@ if not st.session_state.is_uploaded:
       # mengubah nama file tiap jpg sesuai nomor surat
       nosurat = image_to_text("temp_folder", "output_folder")
       nosurat = [int(x) for x in nosurat]
-      st.write(nosurat)
-      st.write("isi folder output_folder", os.listdir("output_folder"))
+      # st.write(nosurat)
+      # st.write("isi folder output_folder", os.listdir("output_folder"))
 
       # 4. filter Kegiatan dataframe based on list No. Surat 
 
@@ -318,7 +318,7 @@ if not st.session_state.is_uploaded:
       scanned_df = Kegiatan.copy()
       scanned_df = scanned_df[scanned_df['NoSurat'].isin(nosurat)]
       scanned_df = scanned_df.drop_duplicates(subset=['NoSurat'])
-      st.write(scanned_df)
+      # st.write(scanned_df)
 
       # 5. make list of karyawan's name that appear inside Kegiatan dataframe
 
