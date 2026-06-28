@@ -17,6 +17,13 @@ from docx import Document
 import os
 from docxcompose.composer import Composer
 from pypdf import PdfWriter
+from PIL import Image
+import pytesseract
+import shutil
+import pymupdf
+import zipfile
+import re
+
 from num2words import num2words # Add num2words import
 
 # --- Configuration --- #
@@ -67,13 +74,17 @@ st.markdown(
 
 # --- Streamlit UI Components --- #
 # --- Sidebar Content --- #
+
+# Title Sidebar
 st.sidebar.header('Filter Options')
 
+# Filter Status Surat Tugas
 options = ["All", "Selesai", "Belum Selesai"]
 Status_surat = st.sidebar.segmented_control(
     "Status Surat Tugas", options, selection_mode="single", default="All"
 )
 
+# Filter Surat Tugas by Month
 months = {
     'All': 0,
     'January': 1, 'February': 2, 'March': 3, 'April': 4, 'May': 5, 'June': 6,
@@ -89,10 +100,12 @@ except ValueError:
 selected_month_name = st.sidebar.selectbox('Select Month', list(months.keys()), index=default_month_index)
 selected_month_num = months[selected_month_name]
 
+# Filter surat tugas by Name
 list_name = Karyawan['Nama'].to_list()
 list_name.insert(0, "All")
 search_name = st.sidebar.selectbox('Search by Employee Name', list_name)
 
+# Filter Formula
 filtered_Kegiatan = Kegiatan.copy()
 
 if Status_surat != "All":
@@ -109,10 +122,11 @@ if st.sidebar.button("Clear App Cache"):
     # 2. Clear both data and function caches
     st.cache_data.clear()
     st.cache_resource.clear()
-    
+
     # 3. Show success message and rerun to refresh the page
     st.success("Cache cleared successfully!")
     st.rerun()
+
 
 # --- Main Content --- #
 st.title('Surat Tugas Kanwil X')
@@ -124,7 +138,7 @@ with col2:
 
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
 st.dataframe(
-    filtered_Kegiatan_display, 
+    filtered_Kegiatan_display,
     width="stretch",
     column_config={
         "NoSurat": st.column_config.Column(width=None),
@@ -135,6 +149,231 @@ st.dataframe(
         "Kegiatan": st.column_config.Column(width=None),
     }
     )
+
+
+# --- Function ---#
+
+# --- Scanned Surat Tugas (PDF) ---#
+def image_to_pdf(image_path, output_file):
+  # Open the image file natively
+  img_doc = pymupdf.open(image_path)
+
+  # Convert the image to PDF bytes
+  pdf_bytes = img_doc.convert_to_pdf()
+
+  # Open the bytes as a new PDF document and save it
+  pdf_doc = pymupdf.open("pdf", pdf_bytes)
+  pdf_doc.save(output_file)
+  pdf_doc.close()
+  img_doc.close()
+
+
+
+def pdf_to_image_basic(pdf_path, output_folder):
+    """
+    Convert a single PDF page to an image
+
+    Args:
+        pdf_path: Path to the PDF file
+        output_path: Path for the output image
+        page_num: Page number to convert (0-indexed)
+    """
+
+    # Create output folder
+    os.makedirs(output_folder, exist_ok=True)
+    # Open the PDF
+    doc = pymupdf.open(pdf_path)
+    for numpage, pages in enumerate(doc):
+      # Get the specified page
+      page = doc[numpage]
+
+      # Render page to a pixmap (image)
+      pix = page.get_pixmap(dpi=200)
+
+      # Save the image
+      pix.save(f"{output_folder}/page_{numpage}.jpg")
+
+    # Clean up
+    doc.close()
+
+def image_to_text(image_folder, output_folder):
+    No_Surat = []
+    list_jpg = sorted(os.listdir(image_folder))
+    for i, st in enumerate(list_jpg):
+      # Open the image using PIL
+      full_image_path = os.path.join(image_folder, st) # Construct the full path
+      image_file = Image.open(full_image_path)
+
+      # Use pytesseract to extract text from the image
+      text = pytesseract.image_to_string(image_file)
+
+      # Searching the index of "Nomor : "
+      Idx_no = text.find("Nomor : ") # + 8
+      # Filename = text[Idx_no:Idx_no+3]
+
+      first_number = re.search(r'\d+', text[Idx_no:])
+      Filename = first_number.group()
+      # print(str(int(first_number)))  # Output: 45
+      No_Surat.append(str(int(Filename)))
+      # os.rename(full_image_path, os.path.join(image_folder, f"{Filename}.jpg"))
+
+      # Convert it back to pdf with the right filename
+      # 1. Open the image file
+      image_doc = pymupdf.open(full_image_path)
+      # 2. Convert the image_file to PDF bytes
+      pdf_bytes = image_doc.convert_to_pdf()
+      # 3. Open the PDF bytes as a new PDF document
+      pdf_doc = pymupdf.open("pdf", pdf_bytes)
+      # 4. Save the PDF
+      os.makedirs(output_folder, exist_ok=True)
+      pdf_doc.save(f"{output_folder}/{Filename}.pdf")
+      image_doc.close()
+      pdf_doc.close()
+    return No_Surat
+
+def merge_pdfs(pdf_list, output_path, output_file):
+    # Create output folder
+    os.makedirs(output_path, exist_ok=True)
+    full_path = os.path.join(output_path,  output_file) # Construct the full path
+
+    writer = PdfWriter()
+
+    for pdf in pdf_list:
+        # Appends the entire PDF to the writer
+        writer.append(pdf)
+
+    # Save the combined PDF
+    with open(full_path, "wb") as f:
+        writer.write(f)
+    # with open(output_path, "wb") as file:
+    #     st.download_button(
+    #         label="Download Scanned PDF",
+    #         data=file,
+    #         file_name=output_path,
+    #         # excel : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    #         # word : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    #         # pdf : "application/pdf"
+    #         mime="application/pdf"
+    #     )
+    # time.sleep(2)
+
+    # Download the file
+    # from google.colab import files
+    # files.download(output_path)
+
+# --- Organized PDF Scanned ---#
+# Upload Berkas Scan PDF Surat Tugas
+uploaded_file = st.sidebar.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
+
+if uploaded_file is not None:
+  with st.sidebar.spinner("Preparing the download file..."):
+    # Save the uploaded file to a temporary location
+    temp_uploaded_pdf_path = "temp_uploaded.pdf"
+    with open(temp_uploaded_pdf_path, "wb") as f:
+        f.write(uploaded_file.read())
+
+    # 1. convert PDF scanned into images
+
+    # satu file pdf dipecah per halaman dalam bentuk jpg
+    pdf_to_image_basic(temp_uploaded_pdf_path, "temp_folder")
+    # st.write(os.listdir("temp_folder"))
+
+    # 2. loop per images, get the No. Surat of the image, also add the No. Surat into list
+    # 3. convert back the image into individual pdf 
+
+    # dari jpg ke bentuk teks
+    # diambil nomor surat tiap halaman &
+    # mengubah nama file tiap jpg sesuai nomor surat
+    nosurat = image_to_text("temp_folder", "output_folder")
+    nosurat = [int(x) for x in nosurat]
+    # st.write(nosurat)
+    # st.write("isi folder output_folder", os.listdir("output_folder"))
+
+    # 4. filter Kegiatan dataframe based on list No. Surat 
+
+    # buat dataframe berdasar tiap nomor surat, hapus duplikat no. surat
+    scanned_df = Kegiatan.copy()
+    scanned_df = scanned_df[scanned_df['NoSurat'].isin(nosurat)]
+    scanned_df = scanned_df.drop_duplicates(subset=['NoSurat'])
+    # st.write(scanned_df)
+
+    # 5. make list of karyawan's name that appear inside Kegiatan dataframe
+
+    # compile semua nama karyawan, split by comma
+    # nama karyawan dalam surat tugas bulan ini
+    # membuat list isi karyawan
+    # value satu cell yang berisi beberapa nama dipecah berdasar koma
+    nama_karyawan_raw = scanned_df['Karyawan'].fillna('').astype(str).str.split(', ')
+    # kumpulan list tiap cell digabung ke dalam satu list besar
+    nama_karyawan = [item.strip() for sublist in nama_karyawan_raw.tolist() for item in sublist if item.strip()]
+    # filter duplicate list
+    nama_karyawan = list(set(nama_karyawan))
+    # st.write(nama_karyawan)
+
+    # 6. loop per name, combine all the pdf by that name into one pdf
+
+    # for i in list nama:
+    # df contain list nama[i]
+    # df[nosurat].unique
+    # looping semua list nama karyawan lembur
+    list_st_pdf = []
+    for nm in nama_karyawan:
+      # filter surat tugas berdasarkan nama
+      current_kegiatan = scanned_df[scanned_df['Karyawan'].str.contains(nm, na=False)].reset_index(drop=True)
+      # mencari NIK Karyawan berdasarkan nama
+      nik_series = Karyawan.loc[Karyawan['Nama'] == nm, 'NIK']
+      NIK_Karyawan = nik_series.iloc[0] if not nik_series.empty else None
+
+      # if NIK_Karyawan is None: # Added check
+      #     st.warning(f"NIK not found for employee {nm}.")
+      #     continue # Skip to the next employee if NIK is not found
+
+      # membuat lokasi folder surat tugas yang telah diupload di gdrive
+      list_st = [f'output_folder/{x}.pdf' for x in current_kegiatan['NoSurat'].unique()]
+      # merge pdf & download
+      merge_pdfs(list_st, "scan", f"ST_{NIK_Karyawan}_{nm}.pdf")
+      # st.write('listdir inside loop')
+      # st.write(os.listdir("scan"))
+      list_st_pdf.append(f"ST_{NIK_Karyawan}_{nm}.pdf")
+    # 7. after get all the pdf, zip it
+    # 8. make download button
+
+
+    
+    
+    # st.write("isi folder scan", os.listdir("scan"))
+    # Create the zip file AFTER all individual PDFs are merged into the "scan" folder
+    # st.write(os.listdir("scan"))
+    zip_file_path = "scan/ST_Scanned.zip"
+    # Zips the entire 'my_folder' directory into 'backup.zip'
+    # shutil.make_archive(base_name=zip_file_path,  # What to name the final ZIP file
+    #       format="zip",  # The compression format
+    #       root_dir="scan")
+    with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+      for foldername, subfolders, filenames in os.walk("scan"):
+        for filename in filenames:
+          if filename.endswith(".pdf"):
+            file_path = os.path.join(foldername, filename)
+            zipf.write(file_path, os.path.basename(file_path))
+
+    # st.write("Isi Folder scan", os.listdir("scan"))
+    
+
+    # Now open the created zip file in binary read mode
+    with open(zip_file_path, "rb") as file:
+          st.sidebar.download_button(
+              label="Download Scanned PDF",
+              data=file,
+              file_name="ST_Scanned.zip",
+              # excel : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              # word : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              # pdf : "application/pdf"
+              mime="application/zip"
+          )
+
+    # Clean up the temporary uploaded PDF file
+    os.remove(temp_uploaded_pdf_path)
+
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
@@ -604,15 +843,17 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
 col1, col2 = st.columns([0.2, 0.8]) # Removed the third column
 with col1:
   if st.button('Generate Surat Tugas'):
-    download_ST(filtered_Kegiatan, Kegiatan, karyawan_df)
+    with st.spinner("Preparing the download file..."):
+      download_ST(filtered_Kegiatan, Kegiatan, karyawan_df)
 with col2:
   if st.button('Generate Surat Lembur'):
-    # Make sure to pass the correct arguments to generate_monthly_report
-    # 'search_name' is the employee name (nm)
-    # 'selected_month_num' is the month number (bulan)
-    # The remaining arguments are the template files and URL
-    generate_monthly_report(filtered_Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
-                            temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
+    with st.spinner("Preparing the download file..."):
+      # Make sure to pass the correct arguments to generate_monthly_report
+      # 'search_name' is the employee name (nm)
+      # 'selected_month_num' is the month number (bulan)
+      # The remaining arguments are the template files and URL
+      generate_monthly_report(filtered_Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
+                              temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 
-st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe*")
-st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'*")
+st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe***")
+st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
