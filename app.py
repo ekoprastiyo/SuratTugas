@@ -158,12 +158,12 @@ def link_views(df, cols):
   df.insert(0, cols, link_pdf)
   
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
-link_views(filtered_Kegiatan_display, "View")
+# link_views(filtered_Kegiatan_display, "View")
 st.dataframe(
     filtered_Kegiatan_display,
     width="stretch",
     column_config={
-        "View": st.column_config.LinkColumn(display_text="📄", width=None),
+        # "View": st.column_config.LinkColumn(display_text="📄", width=None),
         "NoSurat": st.column_config.Column(width=None),
         "Keterangan": st.column_config.Column(width=None),
         "Karyawan": st.column_config.Column(width=None),
@@ -955,8 +955,8 @@ def display_pdf(jalur_file):
     st.error(f"⚠️ Berkas '{jalur_file}' tidak ditemukan atau gagal dimuat. Pastikan file sudah diunggah ke folder proyek.")
 
 
-pdf_100 = "Surat_Tugas_PDF/100.pdf"
-# pdf_icon = "📄"
-# all icon : https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
-if st.button("", icon=":material/visibility:", type="tertiary"):
-    display_pdf(pdf_100)
+# pdf_100 = "Surat_Tugas_PDF/100.pdf"
+# # pdf_icon = "📄"
+# # all icon : https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
+# if st.button("", icon=":material/visibility:", type="tertiary"):
+#     display_pdf(pdf_100)
