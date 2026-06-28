@@ -370,43 +370,44 @@ if uploaded_file is not None:
 
     # st.write("Isi Folder scan", os.listdir("scan"))
     
-  # PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
-  pushed_count = 0
-  LOCAL_TMP_DIR = "output_folder"
-  TARGET_SUBFOLDER = "Surat_Tugas_PDF"
-  for filename in os.listdir(LOCAL_TMP_DIR):
-      file_path = os.path.join(LOCAL_TMP_DIR, filename)
-      
-      if os.path.isfile(file_path):
-          with open(file_path, "rb") as f:
-              file_bytes = f.read()
-              
-          github_file_path = f"{TARGET_SUBFOLDER}/{filename}"
-          
-          try:
-              # Cek dan unggah ke GitHub
-              try:
-                  existing_file = repo.get_contents(github_file_path)
-                  repo.update_file(path=github_file_path, message=f"Update massal {filename}", content=file_bytes, sha=existing_file.sha, branch="main")
-              except Exception:
-                  repo.create_file(path=github_file_path, message=f"Upload massal {filename}", content=file_bytes, branch="main")
-              pushed_count += 1
-          except Exception as e:
-              st.error(f"Gagal mengunggah {filename}: {e}")
+    # PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
+    pushed_count = 0
+    LOCAL_TMP_DIR = "output_folder"
+    TARGET_SUBFOLDER = "Surat_Tugas_PDF"
+    for filename in os.listdir(LOCAL_TMP_DIR):
+        file_path = os.path.join(LOCAL_TMP_DIR, filename)
+        
+        if os.path.isfile(file_path):
+            with open(file_path, "rb") as f:
+                file_bytes = f.read()
+                
+            github_file_path = f"{TARGET_SUBFOLDER}/{filename}"
+            
+            try:
+                # Cek dan unggah ke GitHub
+                try:
+                    existing_file = repo.get_contents(github_file_path)
+                    repo.update_file(path=github_file_path, message=f"Update massal {filename}", content=file_bytes, sha=existing_file.sha, branch="main")
+                except Exception:
+                    repo.create_file(path=github_file_path, message=f"Upload massal {filename}", content=file_bytes, branch="main")
+                pushed_count += 1
+            except Exception as e:
+                st.error(f"Gagal mengunggah {filename}: {e}")
+
+
+    # Now open the created zip file in binary read mode
+    with open(zip_file_path, "rb") as file:
+          st.sidebar.download_button(
+              label="Download Scanned PDF",
+              data=file,
+              file_name="ST_Scanned.zip",
+              # excel : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              # word : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              # pdf : "application/pdf"
+              mime="application/zip"
+          )
 
   st.sidebar.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
-
-  # Now open the created zip file in binary read mode
-  with open(zip_file_path, "rb") as file:
-        st.sidebar.download_button(
-            label="Download Scanned PDF",
-            data=file,
-            file_name="ST_Scanned.zip",
-            # excel : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            # word : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            # pdf : "application/pdf"
-            mime="application/zip"
-        )
 
   # Clean up the temporary uploaded PDF file
   os.remove(temp_uploaded_pdf_path)
