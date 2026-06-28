@@ -298,7 +298,7 @@ if uploaded_file is not None:
     nosurat = image_to_text("temp_folder", "output_folder")
     nosurat = [int(x) for x in nosurat]
     # st.write(nosurat)
-    # st.write("isi folder output_folder", os.listdir("output_folder"))
+    st.write("isi folder output_folder", os.listdir("output_folder"))
 
     # 4. filter Kegiatan dataframe based on list No. Surat 
 
