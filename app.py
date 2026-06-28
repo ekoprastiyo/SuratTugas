@@ -928,3 +928,6 @@ with col2:
 
 st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe***")
 st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
+
+pdf_100 = "Surat_Tugas_PDF/100.pdf"
+st.pdf(pdf_100)
