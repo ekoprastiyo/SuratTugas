@@ -274,9 +274,12 @@ def merge_pdfs(pdf_list, output_path, output_file):
 
 # --- Organized PDF Scanned ---#
 # Upload Berkas Scan PDF Surat Tugas
-uploaded_file = st.sidebar.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
+# Bungkus Uploader ke dalam Form agar tidak langsung memicu kode di bawahnya
+with st.form("upload_form", clear_on_submit=True):
+  uploaded_file = st.sidebar.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
+  submit_button = st.form_submit_with_button("Proses")
 
-if uploaded_file is not None:
+if submit_button and uploaded_file is not None:
   with st.sidebar.spinner("Preparing the download file..."):
     # Save the uploaded file to a temporary location
     temp_uploaded_pdf_path = "temp_uploaded.pdf"
