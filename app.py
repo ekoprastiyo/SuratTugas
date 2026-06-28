@@ -277,7 +277,7 @@ def merge_pdfs(pdf_list, output_path, output_file):
 # Bungkus Uploader ke dalam Form agar tidak langsung memicu kode di bawahnya
 with st.form("upload_form", clear_on_submit=True):
   uploaded_file = st.sidebar.file_uploader("Upload PDF Surat Tugas", type=["pdf"])
-  submit_button = st.form_submit_with_button("Proses")
+  submit_button = st.form_submit_button("Proses")
 
 if submit_button and uploaded_file is not None:
   with st.sidebar.spinner("Preparing the download file..."):
