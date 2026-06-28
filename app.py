@@ -413,7 +413,7 @@ if not st.session_state.is_uploaded:
               except Exception as e:
                   st.error(f"Gagal mengunggah {filename}: {e}")
 
-      st.sidebar.write(f"Berhasil mengunggah {pushed_count} file ke GitHub.")
+      st.sidebar.write(f"Berhasil membuat {len(nama_karyawan)} file Surat Tugas.")
 
 
     # Now open the created zip file in binary read mode
