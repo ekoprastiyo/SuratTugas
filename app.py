@@ -159,9 +159,12 @@ def link_views(df, cols):
   
 filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
 # link_views(filtered_Kegiatan_display, "View")
-st.dataframe(
+event = st.dataframe(
     filtered_Kegiatan_display,
     width="stretch",
+    on_select="rerun",           # Mengunduh ulang halaman saat baris diklik
+    selection_mode="single-row", # Hanya izinkan pilih 1 baris sebagai tombol
+    hide_index=True,
     column_config={
         # "View": st.column_config.LinkColumn(display_text="📄", width=None),
         "NoSurat": st.column_config.Column(width=None),
@@ -173,6 +176,22 @@ st.dataframe(
     }
     )
 
+@st.dialog("Pratinjau Dokumen", width="medium")
+def display_pdf(jalur_file):
+  try:
+    # Parameter height="stretch" akan menyesuaikan tinggi jendela pop-up
+    st.pdf(jalur_file, height="stretch")
+  except (FileNotFoundError, Exception):
+    # Jika file tidak ditemukan atau ada masalah pembacaan
+    st.error(f"⚠️ Berkas '{jalur_file}' tidak ditemukan atau gagal dimuat. Pastikan file sudah diunggah ke folder proyek.")
+
+# 4. Logika Aksi: Jika pengguna mengklik salah satu baris tabel
+if event.selection.rows:
+    indeks_terpilih = event.selection.rows[0]
+    file_target = f"Surat_Tugas_PDF/{filtered_Kegiatan_display.iloc[indeks_terpilih]["NoSurat"]}.pdf"
+    
+    # Jalankan fungsi pop-up langsung setelah baris diklik
+    display_pdf(file_target)
 
 # --- Function ---#
 
@@ -945,14 +964,6 @@ st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 # Menampilkan ke halaman Streamlit
 # if st.button("buka pdf"):
 #   st.pdf(pdf_100)
-
-def display_pdf(jalur_file):
-  try:
-    # Parameter height="stretch" akan menyesuaikan tinggi jendela pop-up
-    st.pdf(jalur_file, height="stretch")
-  except (FileNotFoundError, Exception):
-    # Jika file tidak ditemukan atau ada masalah pembacaan
-    st.error(f"⚠️ Berkas '{jalur_file}' tidak ditemukan atau gagal dimuat. Pastikan file sudah diunggah ke folder proyek.")
 
 
 # pdf_100 = "Surat_Tugas_PDF/100.pdf"
