@@ -131,7 +131,7 @@ if search_name != "All":
     filtered_Kegiatan = filtered_Kegiatan[filtered_Kegiatan['Karyawan'].str.contains(search_name, case=False, na=False)]
 
 # 1. Create a button in the app
-if st.sidebar.button("Clear App Cache"):
+if st.sidebar.button("Clear App Cache", help="Refresh Web untuk Update Data"):
     # 2. Clear both data and function caches
     st.cache_data.clear()
     st.cache_resource.clear()
@@ -976,11 +976,11 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
 
 col1, col2 = st.columns([0.2, 0.8]) # Removed the third column
 with col1:
-  if st.button('Generate Surat Tugas'):
+  if st.button('Generate Surat Tugas', help="Mendownload File Word Surat Tugas untuk TTD Manual"):
     with st.spinner("Preparing to download the file..."):
       download_ST(filtered_Kegiatan, Kegiatan, karyawan_df)
 with col2:
-  if st.button('Generate Surat Lembur'):
+  if st.button('Generate Surat Lembur', help="Mendownload File Word Absensi Lembur untuk Karyawan EPS"):
     with st.spinner("Preparing to download the file..."):
       # Make sure to pass the correct arguments to generate_monthly_report
       # 'search_name' is the employee name (nm)
@@ -989,8 +989,8 @@ with col2:
       generate_monthly_report(filtered_Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
                               temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 
-st.markdown("**Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe***")
-st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
+st.markdown("***Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe**")
+# st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
 # @st.dialog("Pratinjau Dokumen", width="medium")
 # Menampilkan ke halaman Streamlit
