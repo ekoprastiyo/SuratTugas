@@ -970,7 +970,7 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
     else:
       # merge_pdfs(angka_ke_bulan(bulan), list_st, f"ST_{output_filename}.pdf")
       # print(f"Else_ST_{output_filename}.pdf")
-      st.warning("No documents generated for merging. Check your filters.")
+      st.warning(f"Surat Lembur only for EPS Vendor")
   else:
     st.warning(f"Employee '{nm}' not found in the activity list for the selected month.")
 
