@@ -39,7 +39,6 @@ GIT_REPO = st.secrets["GIT_REPO"]
 g = Github(GIT_TOKEN)
 repo = g.get_repo(f"{GIT_USERNAME}/{GIT_REPO}")
 
-
 # --- Configuration --- #
 template_file = 'ST26-template.docx'
 # template form absensi
@@ -194,7 +193,7 @@ def display_pdf(jalur_file):
         # Menggunakan komponen link_button asli Streamlit (Sangat aman dan bersih)
         st.link_button(
           label="🖨️", 
-          url=jalur_file, 
+          url=f"https://raw.githubusercontent.com/{GIT_USERNAME}/{GIT_REPO}/main/{jalur_file}", 
           use_container_width=True
         )
     with col3:
