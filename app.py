@@ -775,6 +775,7 @@ def Surat_Perintah_Lembur(df, nama, bulan, temp_file_perintah_lembur):
 def Surat_Daftar_Lembur(df, nama, NIK_Karyawan, bulan, url, absen_aralia, temp_file_daftar_lembur):
   # filter duplikat data
   Kegiatan = df.drop_duplicates(subset=["JangkaWaktu"]).reset_index(drop=True)
+  # Kegiatan = Kegiatan.sort_values(by="TanggalAwal").reset_index(drop=True)
   # list tanggal lembur
   TanggalLembur = []
   for x in range(len(Kegiatan)):
@@ -919,6 +920,7 @@ def generate_monthly_report(Kegiatan, Karyawan, nm, bulan, absen_aralia, url,
   if nm in nama_karyawan:
     # filter surat tugas berdasarkan nama
     current_kegiatan = Kegiatan[Kegiatan['Karyawan'].str.contains(nm, na=False)].reset_index(drop=True)
+    current_kegiatan = current_kegiatan.sort_values(by="TanggalAwal").reset_index(drop=True)
     # jika tidak ada nama maka lanjut ke nama selanjutnya
     if current_kegiatan.empty:
       st.write(f"No activities found for {nm} in {angka_ke_bulan(bulan)}")
