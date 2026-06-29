@@ -173,7 +173,6 @@ event = st.dataframe(
     width="stretch",
     on_select="rerun",           # Mengunduh ulang halaman saat baris diklik
     selection_mode="single-row", # Hanya izinkan pilih 1 baris sebagai tombol
-    use_container_width=True,
     hide_index=True,
     column_config=konfigurasi_kolom,
     #  {
