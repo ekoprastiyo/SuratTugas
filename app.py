@@ -194,17 +194,10 @@ def display_pdf(jalur_file):
         konten_pdf = file.read()
 
     # Membuat tata letak kolom agar tombol unduh terlihat rapi di atas
-    col1, col2, col3 = st.columns([3, 1, 1])
+    col1, col2 = st.columns([4, 1])
     with col1:
         st.write(f"📄 Menampilkan: **{os.path.basename(jalur_file)}**")
     with col2:
-        # Menggunakan komponen link_button asli Streamlit (Sangat aman dan bersih)
-        st.link_button(
-          label="🖨️", 
-          url=f"https://raw.githubusercontent.com/{GIT_USERNAME}/{GIT_REPO}/main/{jalur_file}", 
-          use_container_width=True
-        )
-    with col3:
         # Tombol Unduh langsung di dalam dialog
         st.download_button(
             label="Unduh",
