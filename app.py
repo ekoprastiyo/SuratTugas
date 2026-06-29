@@ -435,7 +435,7 @@ if not st.session_state.is_uploaded:
       # shutil.make_archive(base_name=zip_file_path,  # What to name the final ZIP file
       #       format="zip",  # The compression format
       #       root_dir="scan")
-      with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+      with zipfile.ZipFile(zip_file_path, 'w', compression=zipfile.ZIP_DEFLATED) as zipf:
         for pdf_file_path in list_st_pdf:
           if os.path.exists(pdf_file_path):
             zipf.write(pdf_file_path, os.path.basename(pdf_file_path))
