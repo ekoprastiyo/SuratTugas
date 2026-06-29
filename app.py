@@ -150,15 +150,18 @@ with col1:
 with col2:
   st.markdown(f"<div style='text-align: right;'><a href='https://docs.google.com/spreadsheets/d/1SORCi_jXxEN-HSXWBOjX19FY8a6FzegPSAPbuh5k1sI/' target='_blank'>Go to Spreadsheet</a></div>", unsafe_allow_html=True)
 
+filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
+
 
 def link_views(df, cols):
   nosurat = df['NoSurat'].tolist()
   link_folder_pdf = "Surat_Tugas_PDF"
   link_pdf = [f'{link_folder_pdf}/{x}.pdf' for x in nosurat]
   df.insert(0, cols, link_pdf)
-  
-filtered_Kegiatan_display = filtered_Kegiatan.drop(columns=['TanggalAwal', 'TanggalAkhir'], errors='ignore')
+
 # link_views(filtered_Kegiatan_display, "View")
+
+
 event = st.dataframe(
     filtered_Kegiatan_display,
     width="stretch",
@@ -182,7 +185,7 @@ def display_pdf(jalur_file):
     # Membaca file PDF ke dalam memori untuk tombol unduh
     with open(jalur_file, "rb") as file:
         konten_pdf = file.read()
-    
+
     # Membuat tata letak kolom agar tombol unduh terlihat rapi di atas
     col1, col2 = st.columns([4, 1])
     with col1:
@@ -203,13 +206,58 @@ def display_pdf(jalur_file):
     # Jika file tidak ditemukan atau ada masalah pembacaan
     st.error(f"⚠️ Berkas '{jalur_file}' tidak ditemukan atau gagal dimuat. Pastikan file sudah diunggah ke folder proyek.")
 
-# 4. Logika Aksi: Jika pengguna mengklik salah satu baris tabel
+# Logika Aksi: Jika pengguna mengklik salah satu baris tabel
 if event.selection.rows:
     indeks_terpilih = event.selection.rows[0]
     file_target = f"Surat_Tugas_PDF/{filtered_Kegiatan_display.iloc[indeks_terpilih]["NoSurat"]}.pdf"
-    
+
     # Jalankan fungsi pop-up langsung setelah baris diklik
     display_pdf(file_target)
+
+# URL PDF Publik Anda
+pdf_urlss = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+
+# Membuat Layout dengan Tombol Cetak dan Iframe HTML
+html_code = f"""
+<div style="font-family: sans-serif; margin-bottom: 12px;">
+    <button onclick="printPDF()" style="
+        background-color: #FF4B4B; 
+        color: white; 
+        border: none; 
+        padding: 10px 20px; 
+        border-radius: 6px; 
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.1);">
+        🖨️ Cetak Dokumen PDF
+    </button>
+</div>
+
+<iframe id="pdf-window" src="{pdf_urlss}" width="100%" height="700px" style="border:1px solid #ccc; border-radius:4px;"></iframe>
+
+<script>
+function printPDF() {{
+    var iframe = document.getElementById('pdf-window');
+    try {{
+        // Memfokuskan frame dan memicu dialog cetak browser
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    }} catch (e) {{
+        // Solusi jika terjadi pemblokiran CORS browser (Buka di tab baru lalu cetak)
+        var newWin = window.open('{pdf_urlss}', '_blank');
+        newWin.onload = function() {{
+            newWin.print();
+        }};
+    }}
+}}
+</script>
+"""
+
+# Render komponen HTML ke aplikasi Streamlit
+components.html(html_code, height=760)
+
+
 
 # --- Function ---#
 
@@ -355,7 +403,7 @@ if not st.session_state.is_uploaded:
       # st.write(os.listdir("temp_folder"))
 
       # 2. loop per images, get the No. Surat of the image, also add the No. Surat into list
-      # 3. convert back the image into individual pdf 
+      # 3. convert back the image into individual pdf
 
       # dari jpg ke bentuk teks
       # diambil nomor surat tiap halaman &
@@ -365,7 +413,7 @@ if not st.session_state.is_uploaded:
       # st.write(nosurat)
       # st.write("isi folder output_folder", os.listdir("output_folder"))
 
-      # 4. filter Kegiatan dataframe based on list No. Surat 
+      # 4. filter Kegiatan dataframe based on list No. Surat
 
       # buat dataframe berdasar tiap nomor surat, hapus duplikat no. surat
       scanned_df = Kegiatan.copy()
@@ -416,8 +464,8 @@ if not st.session_state.is_uploaded:
       # 8. make download button
 
 
-      
-      
+
+
       # st.write("isi folder scan", os.listdir("scan"))
       # Create the zip file AFTER all individual PDFs are merged into the "scan" folder
       # st.write(os.listdir("scan"))
@@ -434,20 +482,20 @@ if not st.session_state.is_uploaded:
               zipf.write(file_path, os.path.basename(file_path))
 
       # st.write("Isi Folder scan", os.listdir("scan"))
-      
+
       # PROSES UNGGAH DI LUAR LOOP (Satu folder sekaligus)
       pushed_count = 0
       LOCAL_TMP_DIR = "output_folder"
       TARGET_SUBFOLDER = "Surat_Tugas_PDF"
       for filename in os.listdir(LOCAL_TMP_DIR):
           file_path = os.path.join(LOCAL_TMP_DIR, filename)
-          
+
           if os.path.isfile(file_path):
               with open(file_path, "rb") as f:
                   file_bytes = f.read()
-                  
+
               github_file_path = f"{TARGET_SUBFOLDER}/{filename}"
-              
+
               try:
                   # Cek dan unggah ke GitHub
                   try:
