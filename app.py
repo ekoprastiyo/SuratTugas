@@ -194,7 +194,7 @@ def display_pdf(jalur_file):
         # Menggunakan komponen link_button asli Streamlit (Sangat aman dan bersih)
         st.link_button(
           label="🖨️", 
-          url=konten_pdf, 
+          url=jalur_file, 
           use_container_width=True
         )
     with col3:
