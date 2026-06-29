@@ -551,6 +551,7 @@ def bulan_eng_to_ina(english_month_name):
 
 # --- Download Surat Tugas --- #
 def download_ST(df, Kegiatan_all, Karyawan_all):
+    df = df[df['Keterangan']=="Belum Selesai"]
     ListST = list(df["NoSurat"].unique())
     list_dicts = []
 
