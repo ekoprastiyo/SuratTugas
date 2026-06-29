@@ -989,7 +989,7 @@ with col2:
       generate_monthly_report(filtered_Kegiatan, Karyawan, search_name, selected_month_num, "report_absen.xlsx", url,
                               temp_file_konfirmasi_absen, temp_file_perintah_lembur, temp_file_daftar_lembur)
 
-st.markdown("***Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe**")
+# st.markdown("***Untuk tanda tangan, pastikan hanya surat tugas yang belum selesai yang tampil di dataframe**")
 # st.markdown("***Jika Update Spreadsheet, lakukan 'Clear App Cache'***")
 
 # @st.dialog("Pratinjau Dokumen", width="medium")
