@@ -159,23 +159,32 @@ def link_views(df, cols):
   df.insert(0, cols, link_pdf)
 
 # link_views(filtered_Kegiatan_display, "View")
-
+konfigurasi_kolom = {
+    col: st.column_config.TextColumn(
+        label=col,
+        width=None,  # Menentukan lebar dasar kolom (bisa: "small", "medium", "large")
+        disabled=True,
+    )
+    for col in filtered_Kegiatan_display.columns
+}
 
 event = st.dataframe(
     filtered_Kegiatan_display,
     width="stretch",
     on_select="rerun",           # Mengunduh ulang halaman saat baris diklik
     selection_mode="single-row", # Hanya izinkan pilih 1 baris sebagai tombol
+    use_container_width=True,
     hide_index=True,
-    column_config={
-        # "View": st.column_config.LinkColumn(display_text="📄", width=None),
-        "NoSurat": st.column_config.Column(width=None),
-        "Keterangan": st.column_config.Column(width=None),
-        "Karyawan": st.column_config.Column(width=None),
-        "Lokasi": st.column_config.Column(width=None),
-        "JangkaWaktu": st.column_config.Column(width=None),
-        "Kegiatan": st.column_config.Column(width=None),
-    }
+    column_config=konfigurasi_kolom,
+    #  {
+    #     # "View": st.column_config.LinkColumn(display_text="📄", width=None),
+    #     "NoSurat": st.column_config.Column(width=None),
+    #     "Keterangan": st.column_config.Column(width=None),
+    #     "Karyawan": st.column_config.Column(width=None),
+    #     "Lokasi": st.column_config.Column(width=None),
+    #     "JangkaWaktu": st.column_config.Column(width=None),
+    #     "Kegiatan": st.column_config.Column(width=None),
+    # }
     )
 
 @st.dialog("Pratinjau Dokumen", width="medium")
