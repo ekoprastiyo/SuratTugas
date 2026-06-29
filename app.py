@@ -371,8 +371,8 @@ if not st.session_state.is_uploaded:
       # mengubah nama file tiap jpg sesuai nomor surat
       nosurat = image_to_text("temp_folder", "output_folder")
       nosurat = [int(x) for x in nosurat]
-      # st.write(nosurat)
-      # st.write("isi folder output_folder", os.listdir("output_folder"))
+      st.write(nosurat)
+      st.write("isi folder output_folder", os.listdir("output_folder"))
 
       # 4. filter Kegiatan dataframe based on list No. Surat
 
@@ -415,6 +415,7 @@ if not st.session_state.is_uploaded:
 
         # membuat lokasi folder surat tugas yang telah diupload di gdrive
         list_st = [f'output_folder/{x}.pdf' for x in current_kegiatan['NoSurat'].unique()]
+        st.write(list_st)
         # merge pdf & download
         merge_pdfs(list_st, "scan", f"ST_{NIK_Karyawan}_{nm}.pdf")
         # st.write('listdir inside loop')
@@ -423,8 +424,6 @@ if not st.session_state.is_uploaded:
 
       # 7. after get all the pdf, zip it
       # 8. make download button
-
-
 
 
       # st.write("isi folder scan", os.listdir("scan"))
