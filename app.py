@@ -214,51 +214,6 @@ if event.selection.rows:
     # Jalankan fungsi pop-up langsung setelah baris diklik
     display_pdf(file_target)
 
-# URL PDF Publik Anda
-pdf_urlss = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-
-# Membuat Layout dengan Tombol Cetak dan Iframe HTML
-html_code = f"""
-<div style="font-family: sans-serif; margin-bottom: 12px;">
-    <button onclick="printPDF()" style="
-        background-color: #FF4B4B; 
-        color: white; 
-        border: none; 
-        padding: 10px 20px; 
-        border-radius: 6px; 
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-        box-shadow: 0px 2px 4px rgba(0,0,0,0.1);">
-        🖨️ Cetak Dokumen PDF
-    </button>
-</div>
-
-<iframe id="pdf-window" src="{pdf_urlss}" width="100%" height="700px" style="border:1px solid #ccc; border-radius:4px;"></iframe>
-
-<script>
-function printPDF() {{
-    var iframe = document.getElementById('pdf-window');
-    try {{
-        // Memfokuskan frame dan memicu dialog cetak browser
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-    }} catch (e) {{
-        // Solusi jika terjadi pemblokiran CORS browser (Buka di tab baru lalu cetak)
-        var newWin = window.open('{pdf_urlss}', '_blank');
-        newWin.onload = function() {{
-            newWin.print();
-        }};
-    }}
-}}
-</script>
-"""
-
-# Render komponen HTML ke aplikasi Streamlit
-components.html(html_code, height=760)
-
-
-
 # --- Function ---#
 
 # --- Scanned Surat Tugas (PDF) ---#
