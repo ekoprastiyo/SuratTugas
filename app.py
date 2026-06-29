@@ -238,7 +238,6 @@ def image_to_pdf(image_path, output_file):
   img_doc.close()
 
 
-
 def pdf_to_image_basic(pdf_path, output_folder):
     """
     Convert a single PDF page to an image
@@ -420,7 +419,7 @@ if not st.session_state.is_uploaded:
         merge_pdfs(list_st, "scan", f"ST_{NIK_Karyawan}_{nm}.pdf")
         # st.write('listdir inside loop')
         # st.write(os.listdir("scan"))
-        list_st_pdf.append(f"ST_{NIK_Karyawan}_{nm}.pdf")
+        list_st_pdf.append(f"scan/ST_{NIK_Karyawan}_{nm}.pdf")
 
       # 7. after get all the pdf, zip it
       # 8. make download button
@@ -437,11 +436,9 @@ if not st.session_state.is_uploaded:
       #       format="zip",  # The compression format
       #       root_dir="scan")
       with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-        for foldername, subfolders, filenames in os.walk("scan"):
-          for filename in filenames:
-            if filename.endswith(".pdf"):
-              file_path = os.path.join(foldername, filename)
-              zipf.write(file_path, os.path.basename(file_path))
+        for pdf_file_path in list_st_pdf:
+          if os.path.exists(pdf_file_path):
+            zipf.write(pdf_file_path, os.path.basename(pdf_file_path))
 
       # st.write("Isi Folder scan", os.listdir("scan"))
 
@@ -503,11 +500,11 @@ st.session_state.is_uploaded = False
 
 # # JIKA FILE SUDAH DI-UPLOAD: Tampilkan tombol Reset sebagai gantinya
 # else:
-#   # st.warning("File sudah sukses terkirim ke GitHub.")
-#   if st.sidebar.button("Upload File Baru Lagi"):
-#       # Reset saklar ke kondisi awal dan refresh halaman
-#       st.session_state.is_uploaded = False
-#       st.rerun()
+# # st.warning("File sudah sukses terkirim ke GitHub.")
+# if st.sidebar.button("Upload File Baru Lagi"):
+# # Reset saklar ke kondisi awal dan refresh halaman
+# st.session_state.is_uploaded = False
+# st.rerun()
 
 # --- Document Generation Logic --- #
 def merge_docx_files(master_path, files_to_append, output_path):
