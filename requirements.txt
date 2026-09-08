@@ -17,4 +17,3 @@ pymupdf
 Pillow
 pygithub
 openpyxl
-tesseract-ocr
