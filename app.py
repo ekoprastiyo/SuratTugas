@@ -492,7 +492,7 @@ if not st.session_state.is_uploaded:
               # pdf : "application/pdf"
               mime="application/zip"
           )
-    
+
     folders_to_delete = ['scan', 'output_folder', 'temp_folder']
 
     for folder in folders_to_delete:
