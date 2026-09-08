@@ -16,3 +16,4 @@ pypdf
 pymupdf
 Pillow
 pygithub
+openpyxl
