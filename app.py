@@ -361,7 +361,7 @@ if not st.session_state.is_uploaded:
 
       # satu file pdf dipecah per halaman dalam bentuk jpg
       pdf_to_image_basic(temp_uploaded_pdf_path, "temp_folder")
-      # st.write(os.listdir("temp_folder"))
+      st.write(os.listdir("temp_folder"))
 
       # 2. loop per images, get the No. Surat of the image, also add the No. Surat into list
       # 3. convert back the image into individual pdf
@@ -371,7 +371,7 @@ if not st.session_state.is_uploaded:
       # mengubah nama file tiap jpg sesuai nomor surat
       nosurat = image_to_text("temp_folder", "output_folder")
       nosurat = [int(x) for x in nosurat]
-      st.write(nosurat)
+      # st.write(nosurat)
       os.makedirs("output_folder", exist_ok=True)
       st.write("isi folder output_folder", os.listdir("output_folder"))
 
