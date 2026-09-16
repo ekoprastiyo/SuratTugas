@@ -372,7 +372,7 @@ if not st.session_state.is_uploaded:
       nosurat = image_to_text("temp_folder", "output_folder")
       nosurat = [int(x) for x in nosurat]
       st.write(nosurat)
-      os.makedirs(output_folder, exist_ok=True)
+      os.makedirs("output_folder", exist_ok=True)
       st.write("isi folder output_folder", os.listdir("output_folder"))
 
       # 4. filter Kegiatan dataframe based on list No. Surat
